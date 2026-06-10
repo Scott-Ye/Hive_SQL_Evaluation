@@ -96,6 +96,17 @@ python -m src.cli.run_eval
 - 主流程入口：`src/cli/run_eval.py`
 - Java SDK 实现：`sdk/hive_parse_sdk/src/main/java/com/trainingcamp/hive/HiveParseSdkCli.java`
 
+## 答辩材料
+
+- 答辩材料首页：`outputs/star_defense/index.html`
+- 答辩材料子页面：`outputs/star_defense/pages/`
+
+使用方式：
+
+- 在 GitHub 仓库中，可直接进入 `outputs/star_defense/index.html` 与 `outputs/star_defense/pages/` 查看答辩材料文件位置和页面源码。
+- 如需按最终展示效果浏览，请下载仓库后在本地浏览器中直接打开 `outputs/star_defense/index.html`。
+- `index.html` 是整套答辩材料的总入口，页面内已串联主报告、评分标准、样本约束说明、代码页和补充页。
+
 ## 当前评测口径
 
 - 评测目标是纯语法解析，不做执行语义验证
