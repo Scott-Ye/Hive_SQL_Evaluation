@@ -19,5 +19,7 @@ sdk/hive_parse_sdk/target/
 # Excluded directories
 outputs/defense_code/
 outputs/ppt_assets/
+outputs/star_defense/speech.md
+outputs/star_defense/speech.pdf
 ref/
 scripts/
