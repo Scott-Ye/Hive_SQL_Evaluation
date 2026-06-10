@@ -1,0 +1,3 @@
+# Optional Python dependencies for auxiliary visualization/export scripts
+pandas
+matplotlib

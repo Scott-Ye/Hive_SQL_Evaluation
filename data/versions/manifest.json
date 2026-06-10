@@ -1,0 +1,9 @@
+{
+  "latest_version": "20260610_133854",
+  "latest_real_snapshot": "C:\\Users\\INT\\Desktop\\工程训练营-构建大数据开发套件智能体评估体系\\data\\versions\\hive_cases_real_multisource_gold_20260610_133854.csv",
+  "stats": {
+    "real_source_count": 100,
+    "real_duplicate_removed_count": 0
+  },
+  "updated_at": "2026-06-10T13:38:54"
+}
