@@ -1,0 +1,2 @@
+# Exclude cached source HTML from GitHub Linguist language statistics
+data/source_materials/real/official_html_cache/*.html linguist-generated=true
