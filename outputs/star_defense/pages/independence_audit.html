@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>黄金集样本约束说明</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #0b1120;
+      color: #eef4ff;
+    }
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 28px 48px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+    }
+    .sub {
+      color: #b8c5e2;
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 22px;
+    }
+    .card {
+      background: #121a31;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 16px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+    h2 {
+      margin: 0 0 10px;
+      color: #78c6ff;
+      font-size: 20px;
+    }
+    p, li {
+      color: #b8c5e2;
+      line-height: 1.75;
+      font-size: 15px;
+    }
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .rich p {
+      margin: 0 0 12px;
+    }
+    .rich h2, .rich h3, .rich h4 {
+      margin: 18px 0 10px;
+      color: #78c6ff;
+    }
+    .rich strong {
+      color: #eef4ff;
+      font-weight: 800;
+    }
+    .rich em {
+      color: #d7e5ff;
+      font-style: italic;
+    }
+    .rich code {
+      background: rgba(255,255,255,0.07);
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-family: "Cascadia Code", "Consolas", monospace;
+      color: #eef4ff;
+      font-size: 13px;
+    }
+    .rich img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 10px 0;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      table-layout: fixed;
+    }
+    th, td {
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 8px 8px;
+      text-align: left;
+      vertical-align: top;
+      color: #b8c5e2;
+      line-height: 1.6;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+    th {
+      color: #eef4ff;
+    }
+    pre {
+      margin: 0;
+      padding: 16px;
+      background: #0d152b;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: auto;
+      line-height: 1.55;
+      font-size: 13px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      color: #d7e5ff;
+      font-family: "Cascadia Code", "Consolas", monospace;
+    }
+    a {
+      color: #78c6ff;
+      text-decoration: none;
+      border-bottom: 1px dashed rgba(120,198,255,0.45);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>黄金集样本约束说明</h1>
+    <div class="sub">来源文件：C:\Users\INT\Desktop\工程训练营-构建大数据开发套件智能体评估体系\outputs\independence_audit.md</div>
+    <div class="card"><div class="rich"><h2>黄金集样本约束说明</h2><h2>当前结果</h2><ul><li>最终黄金集样本数: 100</li><li>选样前高可信候选池样本数: 3488</li><li>去重后高可信候选池样本数: 2457</li><li>最终黄金集非高可信真值样本数: 0</li><li>当前约束结论: 最终黄金集只保留高可信真值样本。</li></ul><h2>GT 来源分布</h2><ul><li>official_doc_example: 3</li><li>open_benchmark_clientpositive_directory: 46</li><li>open_benchmark_positive_directory: 2</li><li>parser_unit_explicit_negative: 2</li><li>parser_unit_file_heuristic:TestSpecialCharacterInTableNamesQuotes.java: 47</li></ul><h2>GT 强度分布</h2><ul><li>strong: 100</li></ul><h2>当前约束</h2><ul><li>约束 1: 最终 real-source 黄金集只保留高可信真值样本。</li><li>约束 2: baseline 在原始多源候选池首次冻结时写入，后续评测只生成 actual。</li><li>约束 3: 选样逻辑按固定排序、目标分布和覆盖补洞规则执行，不使用随机抽样。</li></ul></div></div>
+  </div>
+  <script>
+    document.querySelectorAll("a").forEach((link) => {
+      link.setAttribute("target", "_blank");
+      link.setAttribute("rel", "noreferrer");
+    });
+  </script>
+</body>
+</html>

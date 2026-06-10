@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>代码入口：run_eval.py</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #0b1120;
+      color: #eef4ff;
+    }
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 28px 48px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+    }
+    .sub {
+      color: #b8c5e2;
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 22px;
+    }
+    .card {
+      background: #121a31;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 16px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+    h2 {
+      margin: 0 0 10px;
+      color: #78c6ff;
+      font-size: 20px;
+    }
+    p, li {
+      color: #b8c5e2;
+      line-height: 1.75;
+      font-size: 15px;
+    }
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .rich p {
+      margin: 0 0 12px;
+    }
+    .rich h2, .rich h3, .rich h4 {
+      margin: 18px 0 10px;
+      color: #78c6ff;
+    }
+    .rich strong {
+      color: #eef4ff;
+      font-weight: 800;
+    }
+    .rich em {
+      color: #d7e5ff;
+      font-style: italic;
+    }
+    .rich code {
+      background: rgba(255,255,255,0.07);
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-family: "Cascadia Code", "Consolas", monospace;
+      color: #eef4ff;
+      font-size: 13px;
+    }
+    .rich img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 10px 0;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      table-layout: fixed;
+    }
+    th, td {
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 8px 8px;
+      text-align: left;
+      vertical-align: top;
+      color: #b8c5e2;
+      line-height: 1.6;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+    th {
+      color: #eef4ff;
+    }
+    pre {
+      margin: 0;
+      padding: 16px;
+      background: #0d152b;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: auto;
+      line-height: 1.55;
+      font-size: 13px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      color: #d7e5ff;
+      font-family: "Cascadia Code", "Consolas", monospace;
+    }
+    a {
+      color: #78c6ff;
+      text-decoration: none;
+      border-bottom: 1px dashed rgba(120,198,255,0.45);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>代码入口：run_eval.py</h1>
+    <div class="sub">来源文件：C:\Users\INT\Desktop\工程训练营-构建大数据开发套件智能体评估体系\src\cli\run_eval.py</div>
+    <div class="card"><h2>main 主链路</h2><pre> 1  from __future__ import annotations
+ 2  
+ 3  from src.core.progress import print_stage
+ 4  from src.core.project_config import (
+ 5      CAPABILITY_ANALYSIS_MD,
+ 6      CURATED_DATASET,
+ 7      EVALUATION_STANDARD_MD,
+ 8      EVAL_REPORT_MD,
+ 9      EVAL_RESULT_CSV,
+10      INDEPENDENCE_AUDIT_MD,
+11      GOLD_ITERATION_REPORT_MD,
+12      GOLD_STABILITY_REPORT_MD,
+13  )
+14  from src.pipelines.dataset_pipeline import build_curated_dataset
+15  from src.reporting.evaluation_standard import build_evaluation_standard_report
+16  from src.reporting.evaluator import (
+17      build_capability_analysis,
+18      build_report,
+19      evaluate_cases,
+20      load_curated_cases,
+21      write_capability_analysis,
+22      write_report,
+23      write_results,
+24  )
+25  from src.reporting.gold_iteration import build_gold_iteration_report
+26  from src.reporting.gold_stability import build_gold_stability_report
+27  
+28  
+29  def main() -&gt; None:
+30      parser_backend = &quot;sdk&quot;
+31      real_dataset_note = (
+32          &quot;评测 real-source 多源黄金集，来源于 Hive 官方文档、Apache Hive 开源 benchmark、&quot;
+33          &quot;Apache Hive parser unit tests。&quot;
+34      )
+35      print_stage(&quot;开始执行完整评测链路&quot;)
+36      build_summary = build_curated_dataset()
+37      print_stage(&quot;加载最终黄金集并执行评测&quot;)
+38      real_cases = load_curated_cases(CURATED_DATASET)
+39      real_results = evaluate_cases(real_cases, parser_backend=parser_backend)
+40      print_stage(&quot;写出评测结果与分析报告&quot;)
+41      write_results(real_results, EVAL_RESULT_CSV)
+42      write_report(
+43          build_report(
+44              real_results,
+45              report_title=&quot;发布Agent - Hive SQL 多源真实来源黄金集评测报告&quot;,
+46              dataset_note=real_dataset_note,
+47              parser_backend=parser_backend,
+48          ),
+49          EVAL_REPORT_MD,
+50      )
+51      write_capability_analysis(
+52          build_capability_analysis(
+53              real_results,
+54              report_title=&quot;Hive Parse 多源黄金集能力分析&quot;,
+55              dataset_note=real_dataset_note,
+56              parser_backend=parser_backend,
+57          ),
+58          CAPABILITY_ANALYSIS_MD,
+59      )
+60      build_evaluation_standard_report(real_results, output_path=EVALUATION_STANDARD_MD)
+61      build_gold_stability_report(real_cases, real_results, output_path=GOLD_STABILITY_REPORT_MD)
+62      build_gold_iteration_report(
+63          real_cases,
+64          real_results,
+65          strict_candidate_count=int(build_summary[&quot;real_strict_candidate_count&quot;]),
+66          strict_candidate_deduped_count=int(build_summary[&quot;real_deduped_count&quot;]),
+67          output_path=GOLD_ITERATION_REPORT_MD,
+68      )
+69  
+70      print(f&quot;Real-source dataset built: {build_summary[&#x27;real_count&#x27;]} cases&quot;)
+71      print(f&quot;Real-source dataset path: {build_summary[&#x27;real_dataset_path&#x27;]}&quot;)
+72      print(f&quot;Real results written to: {EVAL_RESULT_CSV}&quot;)
+73      print(f&quot;Real report written to: {EVAL_REPORT_MD}&quot;)
+74      print(f&quot;Capability analysis written to: {CAPABILITY_ANALYSIS_MD}&quot;)
+75      print(f&quot;Evaluation standard written to: {EVALUATION_STANDARD_MD}&quot;)
+76      print(f&quot;Gold constraint summary written to: {INDEPENDENCE_AUDIT_MD}&quot;)
+77      print(f&quot;Gold stability analysis written to: {GOLD_STABILITY_REPORT_MD}&quot;)
+78      print(f&quot;Gold iteration report written to: {GOLD_ITERATION_REPORT_MD}&quot;)
+79  
+80  
+81  if __name__ == &quot;__main__&quot;:
+82      main()</pre></div>
+  </div>
+  <script>
+    document.querySelectorAll("a").forEach((link) => {
+      link.setAttribute("target", "_blank");
+      link.setAttribute("rel", "noreferrer");
+    });
+  </script>
+</body>
+</html>

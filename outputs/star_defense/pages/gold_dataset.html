@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>最终黄金集</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #0b1120;
+      color: #eef4ff;
+    }
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 28px 48px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+    }
+    .sub {
+      color: #b8c5e2;
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 22px;
+    }
+    .card {
+      background: #121a31;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 16px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+    h2 {
+      margin: 0 0 10px;
+      color: #78c6ff;
+      font-size: 20px;
+    }
+    p, li {
+      color: #b8c5e2;
+      line-height: 1.75;
+      font-size: 15px;
+    }
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .rich p {
+      margin: 0 0 12px;
+    }
+    .rich h2, .rich h3, .rich h4 {
+      margin: 18px 0 10px;
+      color: #78c6ff;
+    }
+    .rich strong {
+      color: #eef4ff;
+      font-weight: 800;
+    }
+    .rich em {
+      color: #d7e5ff;
+      font-style: italic;
+    }
+    .rich code {
+      background: rgba(255,255,255,0.07);
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-family: "Cascadia Code", "Consolas", monospace;
+      color: #eef4ff;
+      font-size: 13px;
+    }
+    .rich img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 10px 0;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      table-layout: fixed;
+    }
+    th, td {
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 8px 8px;
+      text-align: left;
+      vertical-align: top;
+      color: #b8c5e2;
+      line-height: 1.6;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+    th {
+      color: #eef4ff;
+    }
+    pre {
+      margin: 0;
+      padding: 16px;
+      background: #0d152b;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: auto;
+      line-height: 1.55;
+      font-size: 13px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      color: #d7e5ff;
+      font-family: "Cascadia Code", "Consolas", monospace;
+    }
+    a {
+      color: #78c6ff;
+      text-decoration: none;
+      border-bottom: 1px dashed rgba(120,198,255,0.45);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>最终黄金集</h1>
+    <div class="sub">来源文件：C:\Users\INT\Desktop\工程训练营-构建大数据开发套件智能体评估体系\data\curated\hive_cases_real_multisource_gold.csv</div>
+    <div class="card"><h2>摘要</h2><table><thead><tr><th>指标</th><th>说明</th></tr></thead><tbody><tr><td>最终样本数</td><td>100 条最终黄金集样本</td></tr><tr><td>GT 强度</td><td>全部为高可信真值</td></tr><tr><td>字段重点</td><td><code>gt_*</code> / <code>baseline_*</code> / <code>source_ref</code> / <code>sql_text</code></td></tr></tbody></table></div><div class="card"><h2>前几行预览</h2><table><thead><tr><th>case_id</th><th>level1_category</th><th>level2_category</th><th>difficulty</th><th>gt_status</th><th>gt_error_type</th><th>gt_error_subtype</th><th>gt_label_source</th><th>gt_label_strength</th><th>baseline_status</th><th>baseline_error_type</th><th>baseline_error_subtype</th><th>baseline_error_type_raw</th><th>baseline_error_subtype_raw</th><th>baseline_error_position</th><th>baseline_label_source</th><th>sql_text</th><th>source_tier</th><th>source</th><th>source_ref</th><th>tags</th><th>notes</th></tr></thead><tbody><tr><td>HIVE_REAL_001</td><td>QUERY</td><td>JOIN</td><td>medium</td><td>fail</td><td>parse_error</td><td>quoted_identifier_path_syntax</td><td>parser_unit_file_heuristic:TestSpecialCharacterInTableNamesQuotes.java</td><td>strong</td><td>fail</td><td>parse_error</td><td>quoted_identifier_path_syntax</td><td>cannot_recognize_input</td><td>quoted_identifier_path_syntax</td><td>1:98</td><td>local_hive_parse_sdk</td><td>select &quot;cbo_/t3////&quot;.c_int, c, count(*) from (select key as a, c_int+1 as b, sum(c_int) as c from &quot;c/b/o_t1&quot; where (&quot;c/b/o_t1&quot;.c_int + 1 &gt;= 0) and (&quot;c/b/o_t1&quot;.c_int &gt; 0 or &quot;c/b/o_t1&quot;.c_float &gt;= 0) group by c_float, &quot;c/b/o_t1&quot;.c_int, key having &quot;c/b/o_t1&quot;.c_float &gt; 0 and (c_int &gt;=1 or c_float &gt;= 1) and (c_int + c_float) &gt;= 0 order by b % c asc, b desc limit 5) &quot;c/b/o_t1&quot; left outer join (select key as p, c_int+1 as q, sum(c_int) as r from &quot;//cbo_t2&quot; where (&quot;//cbo_t2&quot;.c_int + 1 &gt;= 0) and (&quot;//cbo_t2&quot;.c_int &gt; 0 or &quot;//cbo_t2&quot;.c_float &gt;= 0) group by c_float, &quot;//cbo_t2&quot;.c_int, key having &quot;//cbo_t2&quot;.c_float &gt; 0 and (c_int &gt;=1 or c_float &gt;= 1) and (c_int + c_float) &gt;= 0 limit 5) &quot;//cbo_t2&quot; on &quot;c/b/o_t1&quot;.a=p left outer join &quot;cbo_/t3////&quot; on &quot;c/b/o_t1&quot;.a=key where (b + &quot;//cbo_t2&quot;.q &gt;= 0) and (b &gt; 0 or c_int &gt;= 0) group by &quot;cbo_/t3////&quot;.c_int, c having &quot;cbo_/t3////&quot;.c_int &gt; 0 and (c_int &gt;=1 or c &gt;= 1) and (c_int + c) &gt;= 0 order by &quot;cbo_/t3////&quot;.c_int % c asc, &quot;cbo_/t3////&quot;.c_int, c desc limit 5</td><td>real</td><td>apache_hive_parser_unit</td><td><a href="https://github.com/apache/hive/blob/master/parser/src/test/org/apache/hadoop/hive/ql/parse/TestSpecialCharacterInTableNamesQuotes.java">https://github.com/apache/hive/blob/master/parser/src/test/org/apache/hadoop/hive/ql/parse/TestSpecialCharacterInTableNamesQuotes.java</a></td><td>baseline_error:parse_error;baseline_status:fail;feature:error_parse_error;feature:error_subtype_quoted_identifier_path_syntax;feature:group_by;feature:having;feature:join;feature:limit;feature:order_sort;feature:query;feature:status_fail;feature:subquery;gt_error:parse_error;gt_error_subtype:quoted_identifier_path_syntax;gt_status:fail;gt_strength:strong;level1:query;level2:join;source:apache_hive_parser_unit;tier:real</td><td>Auto-extracted from Apache Hive parser unit tests | baseline=local_hive_parse_sdk</td></tr><tr><td>HIVE_REAL_002</td><td>QUERY</td><td>SELECT_BASIC</td><td>easy</td><td>pass</td><td></td><td></td><td>open_benchmark_clientpositive_directory</td><td>strong</td><td>pass</td><td></td><td></td><td></td><td></td><td></td><td>local_hive_parse_sdk</td><td>select count(*) from (select key, key from src) subq</td><td>real</td><td>apache_hive_clientpositive</td><td><a href="https://github.com/apache/hive/blob/master/ql/src/test/queries/clientpositive/ambiguous_col.q">https://github.com/apache/hive/blob/master/ql/src/test/queries/clientpositive/ambiguous_col.q</a></td><td>baseline_status:pass;feature:query;feature:select_basic;feature:status_pass;feature:subquery;gt_status:pass;gt_strength:strong;level1:query;level2:select_basic;source:apache_hive_clientpositive;tier:real</td><td>Auto-extracted from Apache Hive open-source query test suite | positive directory assertion | baseline=local_hive_parse_sdk</td></tr><tr><td>HIVE_REAL_003</td><td>QUERY</td><td>WHERE_FILTER</td><td>medium</td><td>fail</td><td>parse_error</td><td>quoted_identifier_path_syntax</td><td>parser_unit_file_heuristic:TestSpecialCharacterInTableNamesQuotes.java</td><td>strong</td><td>fail</td><td>parse_error</td><td>quoted_identifier_path_syntax</td><td>cannot_recognize_input</td><td>quoted_identifier_path_syntax</td><td>1:94</td><td>local_hive_parse_sdk</td><td>select * from (select &quot;//cbo_t2&quot;.key as x, c_int as c_int, (((c_int+c_float)*10)+5) as y from &quot;c/b/o_t1&quot; as &quot;//cbo_t2&quot; where &quot;//cbo_t2&quot;.c_int &gt;= 0 and c_float+c_int &gt;= 0 or c_float &lt;= 100) as &quot;c/b/o_t1&quot; where &quot;c/b/o_t1&quot;.c_int &gt;= 0 and y+c_int &gt;= 0 or x &lt;= 100</td><td>real</td><td>apache_hive_parser_unit</td><td><a href="https://github.com/apache/hive/blob/master/parser/src/test/org/apache/hadoop/hive/ql/parse/TestSpecialCharacterInTableNamesQuotes.java">https://github.com/apache/hive/blob/master/parser/src/test/org/apache/hadoop/hive/ql/parse/TestSpecialCharacterInTableNamesQuotes.java</a></td><td>baseline_error:parse_error;baseline_status:fail;feature:error_parse_error;feature:error_subtype_quoted_identifier_path_syntax;feature:query;feature:status_fail;feature:subquery;feature:where_filter;gt_error:parse_error;gt_error_subtype:quoted_identifier_path_syntax;gt_status:fail;gt_strength:strong;level1:query;level2:where_filter;source:apache_hive_parser_unit;tier:real</td><td>Auto-extracted from Apache Hive parser unit tests | baseline=local_hive_parse_sdk</td></tr><tr><td>HIVE_REAL_004</td><td>QUERY</td><td>WHERE_FILTER</td><td>medium</td><td>pass</td><td></td><td></td><td>open_benchmark_clientpositive_directory</td><td>strong</td><td>pass</td><td></td><td></td><td></td><td></td><td></td><td>local_hive_parse_sdk</td><td>SELECT SUM(hash(col)) FROM (SELECT transform(*) using &#x27;tr &quot;\t&quot; &quot;_&quot;&#x27; AS col FROM (SELECT * FROM ac_test.tstsrcpart WHERE ds=&#x27;2008-04-08&#x27;) subq1) subq2</td><td>real</td><td>apache_hive_clientpositive</td><td><a href="https://github.com/apache/hive/blob/master/ql/src/test/queries/clientpositive/archive_multi.q">https://github.com/apache/hive/blob/master/ql/src/test/queries/clientpositive/archive_multi.q</a></td><td>baseline_status:pass;feature:query;feature:status_pass;feature:subquery;feature:transform;feature:where_filter;gt_status:pass;gt_strength:strong;level1:query;level2:where_filter;source:apache_hive_clientpositive;tier:real</td><td>Auto-extracted from Apache Hive open-source query test suite | positive directory assertion | baseline=local_hive_parse_sdk</td></tr><tr><td>HIVE_REAL_005</td><td>QUERY</td><td>GROUP_BY</td><td>medium</td><td>fail</td><td>parse_error</td><td>quoted_identifier_path_syntax</td><td>parser_unit_file_heuristic:TestSpecialCharacterInTableNamesQuotes.java</td><td>strong</td><td>fail</td><td>parse_error</td><td>quoted_identifier_path_syntax</td><td>cannot_recognize_input</td><td>quoted_identifier_path_syntax</td><td>1:40</td><td>local_hive_parse_sdk</td><td>select p_mfgr, p_name, avg(p_size) from &quot;p/a/r/t&quot; group by p_mfgr, p_name having p_name in (select first_value(p_name) over(partition by p_mfgr order by p_size) from &quot;p/a/r/t&quot;) order by p_mfgr</td><td>real</td><td>apache_hive_parser_unit</td><td><a href="https://github.com/apache/hive/blob/master/parser/src/test/org/apache/hadoop/hive/ql/parse/TestSpecialCharacterInTableNamesQuotes.java">https://github.com/apache/hive/blob/master/parser/src/test/org/apache/hadoop/hive/ql/parse/TestSpecialCharacterInTableNamesQuotes.java</a></td><td>baseline_error:parse_error;baseline_status:fail;feature:error_parse_error;feature:error_subtype_quoted_identifier_path_syntax;feature:group_by;feature:having;feature:order_sort;feature:query;feature:status_fail;feature:subquery;feature:window;gt_error:parse_error;gt_error_subtype:quoted_identifier_path_syntax;gt_status:fail;gt_strength:strong;level1:query;level2:group_by;source:apache_hive_parser_unit;tier:real</td><td>Auto-extracted from Apache Hive parser unit tests | baseline=local_hive_parse_sdk</td></tr><tr><td>HIVE_REAL_006</td><td>QUERY</td><td>ORDER_SORT</td><td>medium</td><td>pass</td><td></td><td></td><td>open_benchmark_clientpositive_directory</td><td>strong</td><td>pass</td><td></td><td></td><td></td><td></td><td></td><td>local_hive_parse_sdk</td><td>select a.key, a.value from t1_n55 a where not exists (select 1 from t2_n33 b where a.key=b.key) sort by a.key, a.value</td><td>real</td><td>apache_hive_clientpositive</td><td><a href="https://github.com/apache/hive/blob/master/ql/src/test/queries/clientpositive/antijoin.q">https://github.com/apache/hive/blob/master/ql/src/test/queries/clientpositive/antijoin.q</a></td><td>baseline_status:pass;feature:order_sort;feature:query;feature:status_pass;feature:subquery;gt_status:pass;gt_strength:strong;level1:query;level2:order_sort;source:apache_hive_clientpositive;tier:real</td><td>Auto-extracted from Apache Hive open-source query test suite | positive directory assertion | baseline=local_hive_parse_sdk</td></tr><tr><td>HIVE_REAL_007</td><td>QUERY</td><td>SELECT_BASIC</td><td>easy</td><td>fail</td><td>parse_error</td><td>quoted_identifier_path_syntax</td><td>parser_unit_file_heuristic:TestSpecialCharacterInTableNamesQuotes.java</td><td>strong</td><td>fail</td><td>parse_error</td><td>quoted_identifier_path_syntax</td><td>cannot_recognize_input</td><td>quoted_identifier_path_syntax</td><td>1:73</td><td>local_hive_parse_sdk</td><td>select x from (select count(c_int) over() as x, sum(c_float) over() from &quot;c/b/o_t1&quot;) &quot;c/b/o_t1&quot;</td><td>real</td><td>apache_hive_parser_unit</td><td><a href="https://github.com/apache/hive/blob/master/parser/src/test/org/apache/hadoop/hive/ql/parse/TestSpecialCharacterInTableNamesQuotes.java">https://github.com/apache/hive/blob/master/parser/src/test/org/apache/hadoop/hive/ql/parse/TestSpecialCharacterInTableNamesQuotes.java</a></td><td>baseline_error:parse_error;baseline_status:fail;feature:error_parse_error;feature:error_subtype_quoted_identifier_path_syntax;feature:query;feature:select_basic;feature:status_fail;feature:subquery;feature:window;gt_error:parse_error;gt_error_subtype:quoted_identifier_path_syntax;gt_status:fail;gt_strength:strong;level1:query;level2:select_basic;source:apache_hive_parser_unit;tier:real</td><td>Auto-extracted from Apache Hive parser unit tests | baseline=local_hive_parse_sdk</td></tr><tr><td>HIVE_REAL_008</td><td>QUERY</td><td>INSERT_FROM</td><td>hard</td><td>pass</td><td></td><td></td><td>open_benchmark_clientpositive_directory</td><td>strong</td><td>pass</td><td></td><td></td><td></td><td></td><td></td><td>local_hive_parse_sdk</td><td>from multiinsert_test_text_2 a insert overwrite table multiinsert_test_acid_nondi partition (c) select a.a, a.b, a.c where a.c is not null insert overwrite table multiinsert_test_acid_nondi partition (c) select a.a, a.b, a.c where a.c is null sort by a.c</td><td>real</td><td>apache_hive_clientpositive</td><td><a href="https://github.com/apache/hive/blob/master/ql/src/test/queries/clientpositive/acid_multiinsert_dyn_part.q">https://github.com/apache/hive/blob/master/ql/src/test/queries/clientpositive/acid_multiinsert_dyn_part.q</a></td><td>baseline_status:pass;feature:insert_from;feature:insert_overwrite;feature:order_sort;feature:partition;feature:query;feature:status_pass;feature:subquery;gt_status:pass;gt_strength:strong;level1:query;level2:insert_from;source:apache_hive_clientpositive;tier:real</td><td>Auto-extracted from Apache Hive open-source query test suite | positive directory assertion | baseline=local_hive_parse_sdk</td></tr><tr><td>HIVE_REAL_009</td><td>QUERY</td><td>ORDER_SORT</td><td>medium</td><td>fail</td><td>parse_error</td><td>quoted_identifier_path_syntax</td><td>parser_unit_file_heuristic:TestSpecialCharacterInTableNamesQuotes.java</td><td>strong</td><td>fail</td><td>parse_error</td><td>quoted_identifier_path_syntax</td><td>cannot_recognize_input</td><td>quoted_identifier_path_syntax</td><td>1:595</td><td>local_hive_parse_sdk</td><td>select * from (select count(c_int) over(partition by c_float order by key), sum(c_float) over(partition by c_float order by key), max(c_int) over(partition by c_float order by key), min(c_int) over(partition by c_float order by key), row_number() over(partition by c_float order by key) as rn, rank() over(partition by c_float order by key), dense_rank() over(partition by c_float order by key), round(percent_rank() over(partition by c_float order by key),2), lead(c_int, 2, c_int) over(partition by c_float order by key ), lag(c_float, 2, c_float) over(partition by c_float order by key) from &quot;c/b/o_t1&quot; order by rn) &quot;c/b/o_t1&quot;</td><td>real</td><td>apache_hive_parser_unit</td><td><a href="https://github.com/apache/hive/blob/master/parser/src/test/org/apache/hadoop/hive/ql/parse/TestSpecialCharacterInTableNamesQuotes.java">https://github.com/apache/hive/blob/master/parser/src/test/org/apache/hadoop/hive/ql/parse/TestSpecialCharacterInTableNamesQuotes.java</a></td><td>baseline_error:parse_error;baseline_status:fail;feature:error_parse_error;feature:error_subtype_quoted_identifier_path_syntax;feature:order_sort;feature:query;feature:status_fail;feature:subquery;feature:window;gt_error:parse_error;gt_error_subtype:quoted_identifier_path_syntax;gt_status:fail;gt_strength:strong;level1:query;level2:order_sort;source:apache_hive_parser_unit;tier:real</td><td>Auto-extracted from Apache Hive parser unit tests | baseline=local_hive_parse_sdk</td></tr><tr><td>HIVE_REAL_010</td><td>QUERY</td><td>JOIN</td><td>medium</td><td>pass</td><td></td><td></td><td>open_benchmark_clientpositive_directory</td><td>strong</td><td>pass</td><td></td><td></td><td></td><td></td><td></td><td>local_hive_parse_sdk</td><td>select key from (select v_n9.key from src_autho_test_n8 join v_n9 on src_autho_test_n8.key=v_n9.key)subq order by key limit 10</td><td>real</td><td>apache_hive_clientpositive</td><td><a href="https://github.com/apache/hive/blob/master/ql/src/test/queries/clientpositive/authorization_view_1.q">https://github.com/apache/hive/blob/master/ql/src/test/queries/clientpositive/authorization_view_1.q</a></td><td>baseline_status:pass;feature:join;feature:limit;feature:order_sort;feature:query;feature:status_pass;feature:subquery;gt_status:pass;gt_strength:strong;level1:query;level2:join;source:apache_hive_clientpositive;tier:real</td><td>Auto-extracted from Apache Hive open-source query test suite | positive directory assertion | baseline=local_hive_parse_sdk</td></tr><tr><td>HIVE_REAL_011</td><td>QUERY</td><td>UNION</td><td>hard</td><td>fail</td><td>parse_error</td><td>quoted_identifier_path_syntax</td><td>parser_unit_file_heuristic:TestSpecialCharacterInTableNamesQuotes.java</td><td>strong</td><td>fail</td><td>parse_error</td><td>quoted_identifier_path_syntax</td><td>cannot_recognize_input</td><td>quoted_identifier_path_syntax</td><td>1:67</td><td>local_hive_parse_sdk</td><td>select r2.key from (select key, c_int from (select key, c_int from &quot;c/b/o_t1&quot; union all select key, c_int from &quot;cbo_/t3////&quot; )r1 union all select key, c_int from &quot;cbo_/t3////&quot;)r2 join (select key, c_int from (select * from &quot;c/b/o_t1&quot; union all select * from &quot;//cbo_t2&quot; where &quot;//cbo_t2&quot;.key &gt;=0)r1 union all select key, c_int from &quot;cbo_/t3////&quot;)r3 on r2.key=r3.key where r3.key &gt;=0 order by r2.key</td><td>real</td><td>apache_hive_parser_unit</td><td><a href="https://github.com/apache/hive/blob/master/parser/src/test/org/apache/hadoop/hive/ql/parse/TestSpecialCharacterInTableNamesQuotes.java">https://github.com/apache/hive/blob/master/parser/src/test/org/apache/hadoop/hive/ql/parse/TestSpecialCharacterInTableNamesQuotes.java</a></td><td>baseline_error:parse_error;baseline_status:fail;feature:error_parse_error;feature:error_subtype_quoted_identifier_path_syntax;feature:join;feature:order_sort;feature:query;feature:status_fail;feature:subquery;feature:union;gt_error:parse_error;gt_error_subtype:quoted_identifier_path_syntax;gt_status:fail;gt_strength:strong;level1:query;level2:union;source:apache_hive_parser_unit;tier:real</td><td>Auto-extracted from Apache Hive parser unit tests | baseline=local_hive_parse_sdk</td></tr><tr><td>HIVE_REAL_012</td><td>QUERY</td><td>LIMIT</td><td>easy</td><td>pass</td><td></td><td></td><td>open_benchmark_clientpositive_directory</td><td>strong</td><td>pass</td><td></td><td></td><td></td><td></td><td></td><td>local_hive_parse_sdk</td><td>select explode(*) as x from allcolref limit 10</td><td>real</td><td>apache_hive_clientpositive</td><td><a href="https://github.com/apache/hive/blob/master/ql/src/test/queries/clientpositive/allcolref_in_udf.q">https://github.com/apache/hive/blob/master/ql/src/test/queries/clientpositive/allcolref_in_udf.q</a></td><td>baseline_status:pass;feature:limit;feature:query;feature:status_pass;gt_status:pass;gt_strength:strong;level1:query;level2:limit;source:apache_hive_clientpositive;tier:real</td><td>Auto-extracted from Apache Hive open-source query test suite | positive directory assertion | baseline=local_hive_parse_sdk</td></tr></tbody></table><p>仅展示前 12 行；完整源文件位置：C:\Users\INT\Desktop\工程训练营-构建大数据开发套件智能体评估体系\data\curated\hive_cases_real_multisource_gold.csv</p></div>
+  </div>
+  <script>
+    document.querySelectorAll("a").forEach((link) => {
+      link.setAttribute("target", "_blank");
+      link.setAttribute("rel", "noreferrer");
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>课题说明文档</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #0b1120;
+      color: #eef4ff;
+    }
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 28px 48px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+    }
+    .sub {
+      color: #b8c5e2;
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 22px;
+    }
+    .card {
+      background: #121a31;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 16px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+    h2 {
+      margin: 0 0 10px;
+      color: #78c6ff;
+      font-size: 20px;
+    }
+    p, li {
+      color: #b8c5e2;
+      line-height: 1.75;
+      font-size: 15px;
+    }
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .rich p {
+      margin: 0 0 12px;
+    }
+    .rich h2, .rich h3, .rich h4 {
+      margin: 18px 0 10px;
+      color: #78c6ff;
+    }
+    .rich strong {
+      color: #eef4ff;
+      font-weight: 800;
+    }
+    .rich em {
+      color: #d7e5ff;
+      font-style: italic;
+    }
+    .rich code {
+      background: rgba(255,255,255,0.07);
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-family: "Cascadia Code", "Consolas", monospace;
+      color: #eef4ff;
+      font-size: 13px;
+    }
+    .rich img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 10px 0;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      table-layout: fixed;
+    }
+    th, td {
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 8px 8px;
+      text-align: left;
+      vertical-align: top;
+      color: #b8c5e2;
+      line-height: 1.6;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+    th {
+      color: #eef4ff;
+    }
+    pre {
+      margin: 0;
+      padding: 16px;
+      background: #0d152b;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: auto;
+      line-height: 1.55;
+      font-size: 13px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      color: #d7e5ff;
+      font-family: "Cascadia Code", "Consolas", monospace;
+    }
+    a {
+      color: #78c6ff;
+      text-decoration: none;
+      border-bottom: 1px dashed rgba(120,198,255,0.45);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>课题说明文档</h1>
+    <div class="sub">来源文件：C:\Users\INT\Desktop\工程训练营-构建大数据开发套件智能体评估体系\ref\工程训练营-构建大数据开发套件智能体评估体系.md</div>
+    <div class="card"><div class="rich"><h2>工程训练营-构建大数据开发套件智能体评估体系</h2><h2>课题导师</h2><p>@吕夕冉@于佳钰</p><h2>课题名称</h2><p>基于大数据开发套件智能体构建全方位评测体系</p><h2>课题要求</h2><p>以 智能 Agent 为评测对象，围绕评测数据集搭建、智能响应结果模拟校验两大核心环节，定制系统化量化打分规范，依托程序代码实现自动化评测研判，最终输出多维度量化指标数据与完整专业评测分析报告。</p><h2>任务拆解</h2><h3>工程架构</h3><p>整体采用分层式工程架构，划分为数据层、评测引擎层、结果输出层，层级职责划分明确，各司其职协同完成评测工作。</p><ul><li><strong>数据层</strong>：完成多源异构场景评测数据集的设计、构造与规整存储，提供多样化测试样本，为后续评测筑牢数据基础。</li></ul><ul><li><strong>评测引擎层</strong>：内置定制化打分评判标准，搭载自动化代码校验逻辑，对 Agent 响应内容、任务执行效果自动判别计分。</li></ul><ul><li><strong>结果输出层</strong>：归集各维度评测得分，统计核算核心性能指标，整合评测数据自动生成规范完整的评测报告。</li></ul><h3>核心功能</h3><p><strong>核心闭环：</strong> 评测目标定义 → 评测集自动生成/加载 → 自动化评估执行 → 关键指标计算 → 结果分析与评分 → 评测报告生成与回归基准建立</p><table><thead><tr><th><strong>任务目标</strong></th><th><strong>人员分配</strong></th><th><strong>关键任务</strong></th><th><strong>评估标准</strong></th></tr></thead><tbody><tr><td>- <strong>数据集成Agent：</strong> <br>    - 衡量 Agent 能否根据自然语言需求，正确生成数据集成任务（源端→目标端的同步配置）  <br>    - 用户常用指令：帮我把Hive xx库xx表里数据，同步到下游ClickHouse xx库中”；“帮我把Hive xx库xx表某个字段修改一下，同步到下游ClickHouse xx库中”<br></td><td>4人评测集<br>- 每2人 5个通道<br>3人打分 + 输出报告<br><br><strong>报名人员：</strong><br>@李璐莎 评测集<br>@李晋柯<br>@蒲美琴测评集<br>@刘泽坤<br>@李殷菲 评测集<br><br><br><br><br><br><br></td><td><strong>数据集成Agent</strong><strong> 评测打分体系构建</strong><br>- <strong>评测内容：</strong>开展<a href="https://www.volcengine.com/docs/6260/65365?lang=zh">数据集成产品</a>综合评测，核验多数据源同步能力，涵盖依据源表新建、修改目标表，自动生成同步任务配置；具体通道类型如下。<br>    - 离线集成：<br>        - Hive-&gt;ClickHouse、redis、mysql、Doris、Kafka<br>        - Mysql-&gt;Hive，ClickHouse、Doris<br>        - Hdfs-&gt;Hive<br>    - 流式集成：<br>        - kafka-&gt;Hive/Hdfs<br>    Agent返回<strong>表</strong>结构Demo<br>    Agent返回<strong>任务配置</strong>结构Demo<br>    <pre>JSON
+    {
+      &quot;schemaDiffs&quot;: [
+        {
+          &quot;identifier&quot;: &quot;datasail_clickhouse_source_cn.mysql2hive_date_hour&quot;,
+          &quot;newSchema&quot;: {
+            &quot;alias&quot;: &quot;ods_mysql2hive_orc 表&quot;,
+            &quot;partitions&quot;: [
+              {
+                &quot;isKey&quot;: false,
+                &quot;name&quot;: &quot;date&quot;,
+                &quot;type&quot;: &quot;Date&quot;,
+                &quot;comment&quot;: &quot;天&quot;,
+                &quot;isPrimaryKey&quot;: false
+              },
+              {
+                &quot;name&quot;: &quot;hour&quot;,
+                &quot;type&quot;: &quot;Date&quot;,
+                &quot;comment&quot;: &quot;小时&quot;,
+                &quot;isPrimaryKey&quot;: false,
+                &quot;isKey&quot;: false
+              }
+            ],
+            &quot;primaryKey&quot;: &quot;id&quot;,
+            &quot;datasetType&quot;: &quot;table&quot;,
+            &quot;shardKey&quot;: &quot;id&quot;,
+            &quot;clusterName&quot;: &quot;cnch_epsilon_yg&quot;,
+            &quot;dbName&quot;: &quot;datasail_clickhouse_source_cn&quot;,
+            &quot;name&quot;: &quot;mysql2hive_date_hour&quot;,
+            &quot;columns&quot;: [
+              {
+                &quot;name&quot;: &quot;id&quot;,
+                &quot;type&quot;: &quot;Int64&quot;,
+                &quot;comment&quot;: &quot;主键&quot;,
+                &quot;isPrimaryKey&quot;: true,
+                &quot;isKey&quot;: false
+              },
+              {
+                &quot;isKey&quot;: false,
+                &quot;name&quot;: &quot;text_info&quot;,
+                &quot;type&quot;: &quot;String&quot;,
+                &quot;comment&quot;: &quot;长文本数据&quot;,
+                &quot;isPrimaryKey&quot;: false
+              },
+              {
+                &quot;name&quot;: &quot;tinyint_info&quot;,
+                &quot;type&quot;: &quot;UInt8&quot;,
+                &quot;comment&quot;: &quot;二进制形式的长文本数据&quot;,
+                &quot;isPrimaryKey&quot;: false,
+                &quot;isKey&quot;: false
+              },
+              {
+                &quot;type&quot;: &quot;Date&quot;,
+                &quot;comment&quot;: &quot;日期&quot;,
+                &quot;isPrimaryKey&quot;: false,
+                &quot;isKey&quot;: false,
+                &quot;name&quot;: &quot;date_info&quot;
+              },
+              {
+                &quot;isKey&quot;: false,
+                &quot;name&quot;: &quot;int_info&quot;,
+                &quot;type&quot;: &quot;Int64&quot;,
+                &quot;comment&quot;: &quot;整数&quot;,
+                &quot;isPrimaryKey&quot;: false
+              },
+              {
+                &quot;name&quot;: &quot;decimal_info&quot;,
+                &quot;type&quot;: &quot;Float64&quot;,
+                &quot;comment&quot;: &quot;浮点类型&quot;,
+                &quot;isPrimaryKey&quot;: false,
+                &quot;isKey&quot;: false
+              },
+              {
+                &quot;type&quot;: &quot;Float64&quot;,
+                &quot;comment&quot;: &quot;浮点类型&quot;,
+                &quot;isPrimaryKey&quot;: false,
+                &quot;isKey&quot;: false,
+                &quot;name&quot;: &quot;double_info&quot;
+              },
+              {
+                &quot;isPrimaryKey&quot;: false,
+                &quot;isKey&quot;: false,
+                &quot;name&quot;: &quot;bigint_info&quot;,
+                &quot;type&quot;: &quot;Int64&quot;,
+                &quot;comment&quot;: &quot;整形数据&quot;
+              },
+              {
+                &quot;type&quot;: &quot;String&quot;,
+                &quot;comment&quot;: &quot;时间日期&quot;,
+                &quot;isPrimaryKey&quot;: false,
+                &quot;isKey&quot;: false,
+                &quot;name&quot;: &quot;datetime_info&quot;
+              },
+              {
+                &quot;name&quot;: &quot;timestamp_info&quot;,
+                &quot;type&quot;: &quot;Int64&quot;,
+                &quot;comment&quot;: &quot;时间戳&quot;,
+                &quot;isPrimaryKey&quot;: false,
+                &quot;isKey&quot;: false
+              },
+              {
+                &quot;isPrimaryKey&quot;: false,
+                &quot;isKey&quot;: false,
+                &quot;name&quot;: &quot;blob_info&quot;,
+                &quot;type&quot;: &quot;String&quot;,
+                &quot;comment&quot;: &quot;二进制形式的长文本数据&quot;
+              }
+            ],
+            &quot;virtualColumns&quot;: [],
+            &quot;storageStrategy&quot;: &quot;hi&quot;,
+            &quot;tableType&quot;: &quot;ClickhouseTable&quot;,
+            &quot;identifier&quot;: &quot;datasail_clickhouse_source_cn.mysql2hive_date_hour&quot;,
+            &quot;description&quot;: &quot;ods_mysql2hive_orc 表&quot;
+          },
+          &quot;status&quot;: &quot;generated&quot;,
+          &quot;mismatches&quot;: []
+        }
+      ]
+    }
+    </pre><br>    <pre>Bash
+    {
+        &quot;typeGroup&quot;: &quot;common-dts-batch/stream&quot;,
+        &quot;configuration&quot;: {
+            &quot;reader&quot;: {
+                &quot;type&quot;: &quot;hive&quot;,
+                &quot;parameter&quot;: {
+                    &quot;partitions&quot;: [
+                        {
+                            &quot;type&quot;: &quot;string&quot;,
+                            &quot;name&quot;: &quot;date&quot;,
+                            &quot;value&quot;: &quot;${date}&quot;
+                        },
+                        {
+                            &quot;type&quot;: &quot;string&quot;,
+                            &quot;name&quot;: &quot;hour&quot;,
+                            &quot;value&quot;: &quot;${hour}&quot;
+                        }
+                    ],
+                    &quot;dataSourceId&quot;: -1,
+                    &quot;connectorType&quot;: &quot;hive&quot;,
+                    &quot;databaseName&quot;: &quot;datasail_hive_source_cn&quot;,
+                    &quot;sourceType&quot;: &quot;table&quot;,
+                    &quot;columns&quot;: [
+    
+                    ],
+                    &quot;templateParam&quot;: {
+    
+                    },
+                    &quot;tableName&quot;: &quot;mysql2hive_date_hour&quot;,
+                    &quot;latestDaysNum&quot;: null,
+                    &quot;query&quot;: null,
+                    &quot;idc&quot;: &quot;default&quot;
+                }
+            },
+            &quot;writer&quot;: {
+                &quot;type&quot;: &quot;clickhouse&quot;,
+                &quot;parameter&quot;: {
+                    &quot;partitions&quot;: [
+                        {
+                            &quot;type&quot;: &quot;Date&quot;,
+                            &quot;name&quot;: &quot;date&quot;,
+                            &quot;value&quot;: &quot;${date}&quot;
+                        },
+                        {
+                            &quot;type&quot;: &quot;Date&quot;,
+                            &quot;name&quot;: &quot;hour&quot;,
+                            &quot;value&quot;: &quot;${hour}&quot;
+                        }
+                    ],
+                    &quot;cluster&quot;: &quot;cnch_epsilon_yg&quot;,
+                    &quot;dataSourceId&quot;: -1,
+                    &quot;connectorType&quot;: &quot;clickhouse&quot;,
+                    &quot;2&quot;: &quot;datasail_clickhouse_source_cn&quot;,
+                    &quot;appendMode&quot;: &quot;2&quot;,
+                    &quot;columns&quot;: [
+    
+                    ],
+                    &quot;shardColumn&quot;: &quot;id&quot;,
+                    &quot;tableName&quot;: &quot;mysql2hive_date_hour&quot;,
+                    &quot;ddlSyncMode&quot;: &quot;auto_from_source&quot;,
+                    &quot;idc&quot;: &quot;cn&quot;,
+                    &quot;shardNum&quot;: 1200
+                }
+            },
+            &quot;operator&quot;: {
+                &quot;parameter&quot;: {
+    
+                }
+            },
+            &quot;transformers&quot;: [
+    
+            ]
+        },
+        &quot;internalDomainFlag&quot;: false
+    }
+    </pre><br>- <strong>评测集覆盖面：</strong>是评测根基，要求覆盖全面、标注精准，保障结果具备代表性与复用性。以 Hive -&gt;ClickHouse 同步场景为例，选样兼顾场景、复杂度、业务热度，按难易梯度分级划分，具体原则与样例见下表。<br><img src="https://internal-api-drive-stream.larkoffice.com/space/api/box/stream/download/authcode/?code=OTdiZGI2NjVjOTRjMTUzYTRmYWM1YjY1YjRiY2E4MDNfMzQzMWY0ZWZjZmJmODQzM2VjODgzMzk0ODFlNzdmZTRfSUQ6NzY0MjU5MDM1NDIzOTYyMjA4NV8xNzc5NzAwOTkxOjE3Nzk3ODczOTFfVjM" alt="Image" /><br>- <strong>评测打分体系/产出评测报告：</strong>围绕数据表创建修改、同步任务配置、多源数据传输三大能力评分，按功能合规、运行稳定性、数据准确性、场景适配度划定分值，分级判定优劣等级；且兼顾会话完成端到端时延、Token 消耗等<br>- <strong>可参考设计图：</strong><br><img src="https://internal-api-drive-stream.larkoffice.com/space/api/box/stream/download/authcode/?code=MDk1YWY4NDAwOTM3ZWZjM2E0MDRmNGVmZDkwMGJmNGNfZDdmYWY4N2Y3NzhkMTM0YjE0YjRmYjMzZWM0MGE4MDhfSUQ6NzY0MjYzMDExODg1MTQ4MDUxOF8xNzc5NzAwOTkxOjE3Nzk3ODczOTFfVjM" alt="Image" /></td><td><strong>评测集分布</strong><br>1. 数据集成Agent<br>    - 简单任务 40%<br>    - 复杂多表任务 40% <br>    - 异常与边界 20%<br>2. 发布Agent<br>    - DDL 查询  50%<br>    - DDL （建表/改表）  20%<br>    - DML（写入 / 更新） 20%<br>    - Utility / 其他  10%<br>产出<br>- <strong>评测应用场景</strong>：识别出用于版本回归的黄金测试集，用于日常版本准出<br>- <strong>产出评测报告，</strong>通过报告分析体系评测整体效果，给出明确结论<br></td></tr><tr><td>发布Agent- Hive SQL 评测集沉淀与 Hive 解析能力验证<br></td><td>3人<br><br><strong>报名人员：</strong><br>@香港科技大学-叶华祥<br>@刘东阳<br></td><td>关键任务<br>1. <strong>核心目标：</strong>构建一套可自动化生产、扩充与维护的 Hive SQL 评测集，覆盖常见语句类型与典型语法特性，分类清晰、规模可扩展。<br>2. 评测集统一以 Excel / CSV 格式沉淀，作为标准数据资产，便于人工编辑、协作维护、版本管理与下游消费。<br>3. 构建多源自动化采集与生成管道，支持从官方文档、开源基准、生产日志、模板组合等多渠道自动产出 SQL case，减少人工成本。<br>4. 建立评测集自动化维护机制，包括去重、归类、打标、质量校验、版本演进，保证评测集长期可持续运营。<br>5. 构建轻量解析验证链路，将评测集 SQL 提交至 Hive Parser 验证语法合法性，作为评测集质量门禁与结果回流。<br><img src="https://internal-api-drive-stream.larkoffice.com/space/api/box/stream/download/authcode/?code=ZDRhYjgwNzAyNzI4ZjEzMDc0YjU4YTQ4ODk2MGRlNTBfNjgzNzFmOGQ0NWUzYzk5OWE3YTBlOGEyNzkxNjJkN2FfSUQ6NzY0MjYwNzUzNzUxODk4ODI0NF8xNzc5NzAwOTkxOjE3Nzk3ODczOTFfVjM" alt="Image" /><br><strong>Agent返回结构</strong><br>解析通过Demo                                                                          解析失败Demo   <br><pre>JSON
+{
+    &quot;code&quot;: **200**,
+    &quot;message&quot;: &quot;Success&quot;,
+    &quot;traceId&quot;: &quot;20260522153215CC987968E000CEAD924F&quot;,
+    &quot;data&quot;: {
+        &quot;status&quot;: &quot;ok&quot;,
+        &quot;hints&quot;: [],
+        &quot;result&quot;: **null**
+    }
+}
+</pre><br><pre>JSON
+{
+    &quot;code&quot;: **400**,
+    &quot;message&quot;: &quot;Success&quot;,
+    &quot;traceId&quot;: &quot;202605221537058F84A4F0388A3BC5914E&quot;,
+    &quot;data&quot;: {
+        &quot;status&quot;: &quot;error&quot;,
+        &quot;hints&quot;: [
+            {
+                &quot;source&quot;: &quot;dev&quot;,
+                &quot;type&quot;: &quot;error&quot;,
+                &quot;message&quot;: &quot;LogId:202605221537058F84A4F0388A3BC5914E\norg.apache.calcite.runtime.CalciteContextException:: from line 7, column 24 to line 7, column 74: Number of INSERT target columns (6) does not equal number of source items (5)&quot;
+            }
+        ],
+        &quot;result&quot;: &quot;{&quot;passed&quot;:false,&quot;operation&quot;:&quot;commit&quot;,&quot;testExplainResult&quot;:{&quot;authType&quot;:&quot;dev&quot;,&quot;passed&quot;:false,&quot;tqsQueryResp&quot;:{&quot;code&quot;:0,&quot;errors&quot;:&quot;LogId:202605221537058F84A4F0388A3BC5914E\norg.apache.calcite.runtime.CalciteContextException:: from line 7, column 24 to line 7, column 74: Number of INSERT target columns (6) does not equal number of source items (5)&quot;,&quot;data&quot;:[],&quot;unAuthInfoForTriton&quot;:[],&quot;unAuthInfoForView&quot;:[],&quot;positions&quot;:[{&quot;line&quot;:7,&quot;column&quot;:24},{&quot;line&quot;:7,&quot;column&quot;:74}],&quot;tqsParseCode&quot;:&quot;&quot;,&quot;suggestion&quot;:&quot;&quot;,&quot;username&quot;:&quot;zhanghuarui&quot;}},&quot;prodExplainResult&quot;:{&quot;authType&quot;:&quot;prod&quot;,&quot;passed&quot;:true,&quot;tqsQueryResp&quot;:null},&quot;prodConcatDDLExplainResult&quot;:null}&quot;
+    }
+}
+</pre><br></td></tr></tbody></table><h3>加分项</h3><p>1. <strong>数据集成Agent评测进阶加分项：「一套评测底座，适配全源评估标准」</strong></p><p>搭建通用统一评测底座，复用标准化流转链路。针对不同数据源差异化打分维度、评判规则与验收标准，采用流程统一、规则可配模式，底层执行链路完全一致，上层灵活配置专属评分项、权重及合格阈值。无需重复开发评测流程，快速适配各类数据源评估需求，实现一站式完成多数据源智能打分，大幅精简运维成本，统一评测管控口径。</p><h2>课题评分标准</h2><table><thead><tr><th><strong>评估维度</strong></th><th><strong>权重</strong></th><th><strong>评分要点参考 (Score 1-5)</strong></th><th><strong>得分</strong></th></tr></thead><tbody><tr><td><strong>1. 项目完成度</strong><br></td><td><strong>30%</strong></td><td><strong>1:</strong> 未完成核心功能<br><strong>3:</strong> 完成核心功能，但有明显Bug<br><strong>5:</strong> 功能完整且稳定，超出预期</td></tr><tr><td><strong>2. 技术深度与方案设计</strong><br></td><td><strong>25%</strong></td><td><strong>1:</strong> 技术选型不当，设计混乱<br><strong>3:</strong> 方案合理，技术应用无亮点<br><strong>5:</strong> 方案有创新，技术细节处理出色</td></tr><tr><td><strong>3. 代码质量与规范</strong><br></td><td><strong>15%</strong><br></td><td><strong>1:</strong> 代码混乱，无注释，难阅读<br><strong>3:</strong> 代码基本规范，可读性尚可<br><strong>5:</strong> 代码整洁、模块化好，注释清晰</td></tr><tr><td><strong>4. 答辩表现与沟通</strong></td><td><strong>15%</strong></td><td><strong>1:</strong> 逻辑不清，表达不畅<br><strong>3:</strong> 能清晰陈述项目，但回答问题一般<br><strong>5:</strong> 逻辑严密，表达流畅，对答如流</td></tr><tr><td><strong>5. 学习能力与潜力</strong></td><td><strong>15%</strong></td><td><strong>1:</strong> 辅导中问题重复，无成长<br><strong>3:</strong> 能跟上节奏，被动学习<br><strong>5:</strong> 主动探索，举一反三，成长显著</td></tr><tr><td><strong>总分</strong></td><td><strong>100%</strong></td><td>​-</td></tr></tbody></table><ul><li><strong>通过线</strong>：总分 <strong>≥ 3.5分</strong> (满分5分) 的候选人，方可进入Offer建议名单。低于此分数原则上不予通过。</li></ul></div></div>
+  </div>
+  <script>
+    document.querySelectorAll("a").forEach((link) => {
+      link.setAttribute("target", "_blank");
+      link.setAttribute("rel", "noreferrer");
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>主评测报告</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #0b1120;
+      color: #eef4ff;
+    }
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 28px 48px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+    }
+    .sub {
+      color: #b8c5e2;
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 22px;
+    }
+    .card {
+      background: #121a31;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 16px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+    h2 {
+      margin: 0 0 10px;
+      color: #78c6ff;
+      font-size: 20px;
+    }
+    p, li {
+      color: #b8c5e2;
+      line-height: 1.75;
+      font-size: 15px;
+    }
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .rich p {
+      margin: 0 0 12px;
+    }
+    .rich h2, .rich h3, .rich h4 {
+      margin: 18px 0 10px;
+      color: #78c6ff;
+    }
+    .rich strong {
+      color: #eef4ff;
+      font-weight: 800;
+    }
+    .rich em {
+      color: #d7e5ff;
+      font-style: italic;
+    }
+    .rich code {
+      background: rgba(255,255,255,0.07);
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-family: "Cascadia Code", "Consolas", monospace;
+      color: #eef4ff;
+      font-size: 13px;
+    }
+    .rich img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 10px 0;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      table-layout: fixed;
+    }
+    th, td {
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 8px 8px;
+      text-align: left;
+      vertical-align: top;
+      color: #b8c5e2;
+      line-height: 1.6;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+    th {
+      color: #eef4ff;
+    }
+    pre {
+      margin: 0;
+      padding: 16px;
+      background: #0d152b;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: auto;
+      line-height: 1.55;
+      font-size: 13px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      color: #d7e5ff;
+      font-family: "Cascadia Code", "Consolas", monospace;
+    }
+    a {
+      color: #78c6ff;
+      text-decoration: none;
+      border-bottom: 1px dashed rgba(120,198,255,0.45);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>主评测报告</h1>
+    <div class="sub">来源文件：C:\Users\INT\Desktop\工程训练营-构建大数据开发套件智能体评估体系\outputs\eval_report_real_gold.md</div>
+    <div class="card"><div class="rich"><h2>发布Agent - Hive SQL 多源真实来源黄金集评测报告</h2><h2>评测闭环</h2><ul><li>Agent 层: 当前使用 sdk 后端承载发布 Agent / Hive Parser 返回结构。</li><li>数据层: 评测 real-source 多源黄金集，来源于 Hive 官方文档、Apache Hive 开源 benchmark、Apache Hive parser unit tests。</li><li>评测层: 自动执行 SQL 提交、结果比对、错误聚类和报告输出。</li></ul><h2>解析器表现</h2><ul><li>样本总数: 100</li><li>解析通过率: 48.00% (48/100)</li><li>解析失败率: 52.00% (52/100)</li><li>正样本通过率: 94.12% (48/51)</li><li>负样本命中率: 100.00% (49/49)</li><li>GT 严格一致率: 94.00% (94/100)</li><li>GT 可用匹配率(1分及以上): 97.00% (97/100)</li></ul><h2>评分分布</h2><ul><li>2 分: 94</li><li>1 分: 3</li><li>0 分: 3</li></ul><h2>黄金集质量</h2><ul><li>最终黄金集样本数: 100</li><li>GT 正样本数: 51</li><li>GT 负样本数: 49</li></ul><h2>结果字段说明</h2><ul><li>GT 记录来源侧真值，baseline 记录历史对照，actual 记录本次运行结果；三者职责不同。</li><li>baseline 与 actual 现在同时保留两层错误字段：对齐 GT 口径的 <code>*_error_type</code> / <code>*_error_subtype</code>，以及保留 SDK 原始归一化结果的 <code>*_error_type_raw</code> / <code>*_error_subtype_raw</code>。</li><li>评分、严格一致率和报告统计使用对齐 GT 口径的字段；问题排查时再回看 raw 字段，判断是 SDK 原始报错差异还是评测 taxonomy 对齐差异。</li><li>GT 严格一致率不是解析通过率；前者衡量“与 GT 是否一致”，后者只衡量“是否返回 pass”。</li><li>“评测集分布”描述的是题目构成是否满足目标配比；“一级分类严格一致率”描述的是解析器在该分类上拿到完全一致的比例，两者含义不同，数值不应相同。</li><li><code>2 分</code>：与 GT 完全对齐。正样本要求成功解析；负样本要求在 GT 已提供的细节粒度上完全一致。</li><li><code>1 分</code>：部分正确。状态正确，但负样本细节只达到错误家族或错误子类型部分命中。</li><li><code>0 分</code>：完全错误。状态判断错误，或 GT 已给出的关键细节完全未命中。</li></ul><h2>GT 强度分布</h2><ul><li>strong: 100</li></ul><h2>Baseline 对照</h2><ul><li>baseline 标签来源: local_hive_parse_sdk</li><li>baseline 2 分: 94</li><li>baseline 1 分: 3</li><li>baseline 0 分: 3</li><li>baseline 严格一致率: 94.00%</li></ul><h2>Actual 对照</h2><ul><li>2 分: 94</li><li>1 分: 3</li><li>0 分: 3</li></ul><h2>发布Agent评测集分布</h2><ul><li>QUERY_50: 50/50</li><li>DDL_CREATE_ALTER_20: 20/20</li><li>DML_WRITE_UPDATE_20: 20/20</li><li>UTILITY_OTHER_10: 10/10</li></ul><h2>一级分类严格一致率</h2><ul><li>DDL: 18/20</li><li>DML: 20/20</li><li>QUERY: 47/50</li><li>UTILITY: 9/10</li></ul><h2>二级类型覆盖</h2><ul><li>ALTER_TABLE_SYNTAX: 2/2</li><li>CREATE_DATABASE_SYNTAX: 4/5</li><li>CREATE_TABLE_SYNTAX: 8/8</li><li>CTE: 3/3</li><li>DROP_DATABASE_SYNTAX: 1/2</li><li>DROP_TABLE_SYNTAX: 3/3</li><li>EXPLAIN: 2/2</li><li>GROUP_BY: 5/5</li><li>INSERT_FROM: 2/2</li><li>INSERT_INTO_SYNTAX: 7/7</li><li>INSERT_OVERWRITE_SYNTAX: 5/5</li><li>JOIN: 7/7</li><li>LATERAL_VIEW: 0/1</li><li>LIMIT: 2/2</li><li>LOAD_DATA_SYNTAX: 8/8</li><li>ORDER_SORT: 6/6</li><li>OTHER: 6/6</li><li>SELECT_BASIC: 6/6</li><li>TRANSFORM: 2/2</li><li>UNION: 5/5</li><li>USE_DB: 1/2</li><li>WHERE_FILTER: 7/7</li><li>WINDOW: 2/4</li></ul><h2>典型语法特性覆盖</h2><ul><li>join: 11/11</li><li>window: 6/8</li><li>cte: 4/4</li><li>union: 10/10</li><li>subquery: 46/46</li><li>lateral_view: 1/2</li><li>group_by: 11/12</li><li>having: 11/11</li><li>order_sort: 28/30</li><li>limit: 17/17</li><li>transform: 5/5</li><li>insert_from: 4/4</li><li>insert_overwrite: 9/9</li><li>insert_into: 7/7</li><li>update: 1/1</li><li>delete: 1/1</li><li>create_table: 8/8</li><li>alter_table: 2/2</li><li>drop_table: 3/3</li><li>merge: 1/1</li><li>partition: 17/17</li><li>bucketing: 1/1</li><li>transactional: 2/2</li><li>serde: 5/5</li><li>explain: 2/2</li><li>describe: 3/3</li><li>未覆盖特性: within_group</li></ul><h2>来源分布</h2><ul><li>source_tier=real: 100</li><li>apache_hive_clientpositive: 46</li><li>apache_hive_parser_unit: 49</li><li>apache_hive_positive: 2</li><li>hive_official_docs: 3</li></ul><h2>错误类型分布</h2><ul><li>parse_error: 52</li></ul><h2>错误子类型分布</h2><ul><li>quoted_identifier_path_syntax: 44</li><li>quoted_database_identifier_syntax: 3</li><li>window_clause_syntax: 2</li><li>reserved_keyword_table_name: 2</li><li>generic_parse_failure: 1</li></ul><h2>典型失败 Case</h2><ul><li>HIVE_REAL_001 | QUERY/JOIN | parse_error/quoted_identifier_path_syntax | apache_hive_parser_unit | select &quot;cbo_/t3////&quot;.c_int, c, count(*) from (select key as a, c_int+1 as b, sum(c_int) as c from &quot;c/b/o_t1&quot; where (&quot;...</li><li>HIVE_REAL_003 | QUERY/WHERE_FILTER | parse_error/quoted_identifier_path_syntax | apache_hive_parser_unit | select * from (select &quot;//cbo_t2&quot;.key as x, c_int as c_int, (((c_int+c_float)*10)+5) as y from &quot;c/b/o_t1&quot; as &quot;//cbo_t2...</li><li>HIVE_REAL_005 | QUERY/GROUP_BY | parse_error/quoted_identifier_path_syntax | apache_hive_parser_unit | select p_mfgr, p_name, avg(p_size) from &quot;p/a/r/t&quot; group by p_mfgr, p_name having p_name in (select first_value(p_name...</li><li>HIVE_REAL_007 | QUERY/SELECT_BASIC | parse_error/quoted_identifier_path_syntax | apache_hive_parser_unit | select x from (select count(c_int) over() as x, sum(c_float) over() from &quot;c/b/o_t1&quot;) &quot;c/b/o_t1&quot;</li><li>HIVE_REAL_009 | QUERY/ORDER_SORT | parse_error/quoted_identifier_path_syntax | apache_hive_parser_unit | select * from (select count(c_int) over(partition by c_float order by key), sum(c_float) over(partition by c_float or...</li><li>HIVE_REAL_011 | QUERY/UNION | parse_error/quoted_identifier_path_syntax | apache_hive_parser_unit | select r2.key from (select key, c_int from (select key, c_int from &quot;c/b/o_t1&quot; union all select key, c_int from &quot;cbo_/...</li><li>HIVE_REAL_013 | QUERY/CTE | parse_error/quoted_identifier_path_syntax | apache_hive_parser_unit | with q1 as ( select &quot;c/b/o_t1&quot;.c_int c_int from q2 join &quot;c/b/o_t1&quot; where q2.c_int = &quot;c/b/o_t1&quot;.c_int and &quot;c/b/o_t1&quot;.d...</li><li>HIVE_REAL_015 | QUERY/WINDOW | parse_error/quoted_identifier_path_syntax | apache_hive_parser_unit | select i, a, h, b, c, d, e, f, g, a as x, a +1 as y from (select max(c_int) over (partition by key order by value ran...</li></ul><h2>评测偏差 Case</h2><ul><li>HIVE_REAL_016 | gt=pass// | baseline=fail/parse_error/window_clause_syntax | actual=fail/parse_error/window_clause_syntax | score=0 | SELECT a, SUM(b) OVER (PARTITION BY c ORDER BY d ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM T;</li><li>HIVE_REAL_018 | gt=pass// | baseline=fail/parse_error/generic_parse_failure | actual=fail/parse_error/generic_parse_failure | score=0 | SELECT adid, count(1) FROM pageAds LATERAL VIEW explode(adid_list) adTable AS adid GROUP BY adid;</li><li>HIVE_REAL_038 | gt=pass// | baseline=fail/parse_error/window_clause_syntax | actual=fail/parse_error/window_clause_syntax | score=0 | SELECT a, AVG(b) OVER (PARTITION BY c ORDER BY d ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) FROM T;</li><li>HIVE_REAL_055 | gt=fail/parse_error/quoted_identifier_path_syntax | baseline=fail/parse_error/quoted_database_identifier_syntax | actual=fail/parse_error/quoted_database_identifier_syntax | score=1 | drop database &quot;db~!@#$%^&amp;*(),&lt;&gt;&quot; cascade</li><li>HIVE_REAL_069 | gt=fail/parse_error/quoted_identifier_path_syntax | baseline=fail/parse_error/quoted_database_identifier_syntax | actual=fail/parse_error/quoted_database_identifier_syntax | score=1 | create database &quot;db~!@#$%^&amp;*(),&lt;&gt;&quot;</li><li>HIVE_REAL_093 | gt=fail/parse_error/quoted_identifier_path_syntax | baseline=fail/parse_error/quoted_database_identifier_syntax | actual=fail/parse_error/quoted_database_identifier_syntax | score=1 | use &quot;db~!@#$%^&amp;*(),&lt;&gt;&quot;</li></ul><h2>Baseline 差异 Case</h2><ul><li>当前 actual 与 baseline 在 GT 评分上没有差异</li></ul><h2>当前说明</h2><ul><li>当前 T3 解析能力封装后端: sdk。</li><li>当前报告对象: 评测 real-source 多源黄金集，来源于 Hive 官方文档、Apache Hive 开源 benchmark、Apache Hive parser unit tests。</li><li>当前报告同时展示 GT、baseline 和 actual，便于区分来源侧真值、历史对照和本次运行结果。</li><li>当前负样本中已有 46/49 条达到严格一致；剩余 3 条 partial 都集中在数据库标识符类 case，GT 子类型与 SDK 对齐子类型仍存在少量 taxonomy 差异。</li><li>当前报告同时展示“黄金集质量指标”和“解析器表现指标”，避免把二者混为一谈。</li><li>难度分层画像同时展示 2 分完全一致和 1 分及以上可用匹配，避免把负样本细节掉分误读为整体失效。</li><li>当前最终黄金集只保留高可信真值样本；覆盖扩展通过待审池与历史迭代完成，而不是通过放宽 GT 获得虚高结果。</li></ul></div></div>
+  </div>
+  <script>
+    document.querySelectorAll("a").forEach((link) => {
+      link.setAttribute("target", "_blank");
+      link.setAttribute("rel", "noreferrer");
+    });
+  </script>
+</body>
+</html>

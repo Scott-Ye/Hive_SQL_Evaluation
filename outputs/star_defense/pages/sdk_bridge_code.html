@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SDK 桥接：hive_parser_sdk.py</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #0b1120;
+      color: #eef4ff;
+    }
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 28px 48px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+    }
+    .sub {
+      color: #b8c5e2;
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 22px;
+    }
+    .card {
+      background: #121a31;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 16px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+    h2 {
+      margin: 0 0 10px;
+      color: #78c6ff;
+      font-size: 20px;
+    }
+    p, li {
+      color: #b8c5e2;
+      line-height: 1.75;
+      font-size: 15px;
+    }
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .rich p {
+      margin: 0 0 12px;
+    }
+    .rich h2, .rich h3, .rich h4 {
+      margin: 18px 0 10px;
+      color: #78c6ff;
+    }
+    .rich strong {
+      color: #eef4ff;
+      font-weight: 800;
+    }
+    .rich em {
+      color: #d7e5ff;
+      font-style: italic;
+    }
+    .rich code {
+      background: rgba(255,255,255,0.07);
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-family: "Cascadia Code", "Consolas", monospace;
+      color: #eef4ff;
+      font-size: 13px;
+    }
+    .rich img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 10px 0;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      table-layout: fixed;
+    }
+    th, td {
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 8px 8px;
+      text-align: left;
+      vertical-align: top;
+      color: #b8c5e2;
+      line-height: 1.6;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+    th {
+      color: #eef4ff;
+    }
+    pre {
+      margin: 0;
+      padding: 16px;
+      background: #0d152b;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: auto;
+      line-height: 1.55;
+      font-size: 13px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      color: #d7e5ff;
+      font-family: "Cascadia Code", "Consolas", monospace;
+    }
+    a {
+      color: #78c6ff;
+      text-decoration: none;
+      border-bottom: 1px dashed rgba(120,198,255,0.45);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>SDK 桥接：hive_parser_sdk.py</h1>
+    <div class="sub">来源文件：C:\Users\INT\Desktop\工程训练营-构建大数据开发套件智能体评估体系\src\adapters\hive_parser_sdk.py</div>
+    <div class="card"><h2>Python 调 Java SDK</h2><pre> 36  def ensure_sdk_compiled(force: bool = False) -&gt; None:
+ 37      if not is_sdk_ready():
+ 38          raise FileNotFoundError(
+ 39              &quot;Hive Parse SDK assets are incomplete. Please make sure the Java source and lib jars exist.&quot;
+ 40          )
+ 41  
+ 42      class_file = SDK_CLASS_DIR / &quot;com&quot; / &quot;trainingcamp&quot; / &quot;hive&quot; / &quot;HiveParseSdkCli.class&quot;
+ 43      if not force and class_file.exists() and class_file.stat().st_mtime &gt;= SDK_SOURCE_FILE.stat().st_mtime:
+ 44          return
+ 45  
+ 46      SDK_CLASS_DIR.mkdir(parents=True, exist_ok=True)
+ 47      print_stage(&quot;编译 Java Hive Parse SDK&quot;)
+ 48      print_kv(&quot;Java 源文件&quot;, SDK_SOURCE_FILE)
+ 49      command = [
+ 50          &quot;javac&quot;,
+ 51          &quot;-encoding&quot;,
+ 52          &quot;UTF-8&quot;,
+ 53          &quot;-cp&quot;,
+ 54          _build_classpath(include_classes=False),
+ 55          &quot;-d&quot;,
+ 56          str(SDK_CLASS_DIR),
+ 57          str(SDK_SOURCE_FILE),
+ 58      ]
+ 59      completed = subprocess.run(
+ 60          command,
+ 61          capture_output=True,
+ 62          text=True,
+ 63          encoding=&quot;utf-8&quot;,
+ 64          errors=&quot;ignore&quot;,
+ 65          check=False,
+ 66      )
+ 67      if completed.returncode != 0:
+ 68          raise RuntimeError(
+ 69              &quot;Failed to compile Hive Parse SDK CLI.\n&quot;
+ 70              f&quot;STDOUT:\n{completed.stdout}\nSTDERR:\n{completed.stderr}&quot;
+ 71          )
+ 72      print_kv(&quot;Java SDK 编译结果&quot;, &quot;success&quot;)
+ 73  
+ 74  
+ 75  def _run_sdk_command(args: List[str], *, stdin_text: str | None = None) -&gt; str:
+ 76      ensure_sdk_compiled()
+ 77      command = [
+ 78          &quot;java&quot;,
+ 79          *JAVA_OPEN_MODULE_ARGS,
+ 80          &quot;-cp&quot;,
+ 81          _build_classpath(include_classes=True),
+ 82          SDK_MAIN_CLASS,
+ 83          *args,
+ 84      ]
+ 85      completed = subprocess.run(
+ 86          command,
+ 87          input=stdin_text,
+ 88          capture_output=True,
+ 89          text=True,
+ 90          encoding=&quot;utf-8&quot;,
+ 91          errors=&quot;ignore&quot;,
+ 92          check=False,
+ 93      )
+ 94      if completed.returncode != 0:
+ 95          raise RuntimeError(
+ 96              &quot;Hive Parse SDK execution failed.\n&quot;
+ 97              f&quot;STDOUT:\n{completed.stdout}\nSTDERR:\n{completed.stderr}&quot;
+ 98          )
+ 99      return completed.stdout
+100  
+101  
+102  def parse_sql(sql_text: str) -&gt; Dict[str, str]:
+103      output = _run_sdk_command([], stdin_text=sql_text)
+104      return json.loads(output)
+105  
+106  
+107  def parse_sql_rows(rows: Iterable[Dict[str, str]]) -&gt; List[Dict[str, str]]:
+108      payload_rows = list(rows)
+109      if not payload_rows:
+110          return []
+111  
+112      print_stage(&quot;批量调用 Hive Parse SDK&quot;)
+113      print_kv(&quot;待解析 SQL 数量&quot;, len(payload_rows))
+114      with tempfile.TemporaryDirectory(prefix=&quot;hive_parse_sdk_&quot;) as temp_dir:
+115          temp_path = Path(temp_dir)
+116          input_path = temp_path / &quot;input.jsonl&quot;
+117          output_path = temp_path / &quot;output.jsonl&quot;
+118  
+119          with input_path.open(&quot;w&quot;, encoding=&quot;utf-8&quot;) as handle:
+120              for row in payload_rows:
+121                  handle.write(json.dumps(row, ensure_ascii=False) + &quot;\n&quot;)
+122  
+123          _run_sdk_command([&quot;--input-jsonl&quot;, str(input_path), &quot;--output-jsonl&quot;, str(output_path)])
+124  
+125          results: List[Dict[str, str]] = []
+126          with output_path.open(&quot;r&quot;, encoding=&quot;utf-8&quot;) as handle:
+127              for line in handle:
+128                  if not line.strip():
+129                      continue
+130                  results.append(json.loads(line))
+131          print_kv(&quot;已返回解析结果数&quot;, len(results))
+132          return results</pre></div>
+  </div>
+  <script>
+    document.querySelectorAll("a").forEach((link) => {
+      link.setAttribute("target", "_blank");
+      link.setAttribute("rel", "noreferrer");
+    });
+  </script>
+</body>
+</html>

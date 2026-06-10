@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>建集总控：dataset_pipeline.py</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #0b1120;
+      color: #eef4ff;
+    }
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 28px 48px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+    }
+    .sub {
+      color: #b8c5e2;
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 22px;
+    }
+    .card {
+      background: #121a31;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 16px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+    h2 {
+      margin: 0 0 10px;
+      color: #78c6ff;
+      font-size: 20px;
+    }
+    p, li {
+      color: #b8c5e2;
+      line-height: 1.75;
+      font-size: 15px;
+    }
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .rich p {
+      margin: 0 0 12px;
+    }
+    .rich h2, .rich h3, .rich h4 {
+      margin: 18px 0 10px;
+      color: #78c6ff;
+    }
+    .rich strong {
+      color: #eef4ff;
+      font-weight: 800;
+    }
+    .rich em {
+      color: #d7e5ff;
+      font-style: italic;
+    }
+    .rich code {
+      background: rgba(255,255,255,0.07);
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-family: "Cascadia Code", "Consolas", monospace;
+      color: #eef4ff;
+      font-size: 13px;
+    }
+    .rich img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 10px 0;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      table-layout: fixed;
+    }
+    th, td {
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 8px 8px;
+      text-align: left;
+      vertical-align: top;
+      color: #b8c5e2;
+      line-height: 1.6;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+    th {
+      color: #eef4ff;
+    }
+    pre {
+      margin: 0;
+      padding: 16px;
+      background: #0d152b;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: auto;
+      line-height: 1.55;
+      font-size: 13px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      color: #d7e5ff;
+      font-family: "Cascadia Code", "Consolas", monospace;
+    }
+    a {
+      color: #78c6ff;
+      text-decoration: none;
+      border-bottom: 1px dashed rgba(120,198,255,0.45);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>建集总控：dataset_pipeline.py</h1>
+    <div class="sub">来源文件：C:\Users\INT\Desktop\工程训练营-构建大数据开发套件智能体评估体系\src\pipelines\dataset_pipeline.py</div>
+    <div class="card"><h2>历史偏好与多样性排序</h2><pre>304              copied[&quot;review_reason&quot;] = &quot;medium_gt_requires_manual_review&quot;
+305              copied[&quot;review_priority&quot;] = &quot;high&quot;
+306          else:
+307              copied[&quot;review_reason&quot;] = &quot;weak_gt_excluded_from_strict_gold&quot;
+308              copied[&quot;review_priority&quot;] = &quot;highest&quot;
+309          review_rows.append(copied)
+310      review_rows.sort(
+311          key=lambda row: (
+312              0 if row[&quot;review_priority&quot;] == &quot;highest&quot; else 1,
+313              row[&quot;level1_category&quot;],
+314              row[&quot;level2_category&quot;],
+315              row[&quot;source&quot;],
+316              -len(row[&quot;sql_text&quot;]),
+317          )
+318      )
+319      return review_rows
+320  
+321  
+322  def write_review_queue(rows: List[Dict[str, str]]) -&gt; None:
+323      REAL_REVIEW_QUEUE_DATASET.parent.mkdir(parents=True, exist_ok=True)
+324      with REAL_REVIEW_QUEUE_DATASET.open(&quot;w&quot;, encoding=&quot;utf-8-sig&quot;, newline=&quot;&quot;) as handle:
+325          writer = csv.DictWriter(handle, fieldnames=REVIEW_QUEUE_FIELDS)
+326          writer.writeheader()
+327          writer.writerows([{field: row.get(field, &quot;&quot;) for field in REVIEW_QUEUE_FIELDS} for row in rows])
+328  
+329  
+330  def _read_version_case_rows(file_path: Path) -&gt; List[Dict[str, str]]:
+331      if not file_path.exists():
+332          return []
+333      with file_path.open(&quot;r&quot;, encoding=&quot;utf-8-sig&quot;, newline=&quot;&quot;) as handle:
+334          reader = csv.DictReader(handle)
+335          return [normalize_case_row(row) for row in reader]
+336  
+337  
+338  def build_iteration_preference_sets(snapshot_limit: int = 3) -&gt; Tuple[set[str], set[str]]:
+339      snapshots = sorted(VERSION_DIR.glob(&quot;hive_cases_real_multisource_gold_*.csv&quot;))
+340      if not snapshots:
+341          return set(), set()
+342  
+343      recent_snapshot_paths = snapshots[-snapshot_limit:]
+344      recent_snapshots = [_read_version_case_rows(path) for path in recent_snapshot_paths]
+345      previous_snapshot_rows = recent_snapshots[-1] if recent_snapshots else []
+346      previous_snapshot_sql = {normalize_sql(row[&quot;sql_text&quot;]) for row in previous_snapshot_rows}
+347  
+348      occurrence_counter: Counter = Counter()
+349      gt_signature_counter: Dict[str, set[Tuple[str, str, str, str]]] = {}
+350      for snapshot_rows in recent_snapshots:
+351          seen_in_snapshot = set()
+352          for row in snapshot_rows:
+353              sql_key = normalize_sql(row[&quot;sql_text&quot;])
+354              if sql_key in seen_in_snapshot:
+355                  continue
+356              seen_in_snapshot.add(sql_key)
+357              occurrence_counter[sql_key] += 1
+358              gt_signature_counter.setdefault(sql_key, set()).add(
+359                  (
+360                      row[&quot;gt_status&quot;],
+361                      row[&quot;gt_error_type&quot;],
+362                      row[&quot;gt_error_subtype&quot;],
+363                      row[&quot;gt_label_strength&quot;],
+364                  )
+365              )
+366  </pre></div><div class="card"><h2>选样总控</h2><pre>661      for bucket in bucket_fail_pool:
+662          bucket_fail_pool[bucket] = _pick_diverse_rows(
+663              bucket_fail_pool[bucket],
+664              len(bucket_fail_pool[bucket]),
+665              stable_core_sql=stable_core_sql,
+666              previous_snapshot_sql=previous_snapshot_sql,
+667          )
+668  
+669      while current_fail_count &lt; target_fail_count:
+670          replaced = False
+671          for bucket in TARGET_BUCKETS:
+672              replacement_pool = bucket_fail_pool.get(bucket, [])
+673              if not replacement_pool:
+674                  continue
+675              removable_indices = [
+676                  index
+677                  for index, row in enumerate(balanced_rows)
+678                  if build_distribution_bucket(row) == bucket and row[&quot;gt_status&quot;] == &quot;pass&quot;
+679              ]
+680              if not removable_indices:
+681                  continue
+682              removable_indices.sort(
+683                  key=lambda index: (
+684                      _history_priority_key(
+685                          balanced_rows[index],
+686                          stable_core_sql=stable_core_sql,
+687                          previous_snapshot_sql=previous_snapshot_sql,
+688                      ),</pre></div><div class="card"><h2>构建总入口</h2><pre>647      current_fail_count = sum(1 for row in balanced_rows if row[&quot;gt_status&quot;] == &quot;fail&quot;)
+648      if current_fail_count &gt;= target_fail_count:
+649          return balanced_rows
+650  
+651      selected_sql = {normalize_sql(row[&quot;sql_text&quot;]) for row in balanced_rows}
+652      bucket_fail_pool: Dict[str, List[Dict[str, str]]] = {bucket: [] for bucket in TARGET_BUCKETS}
+653      for row in candidate_rows:
+654          if row[&quot;gt_status&quot;] != &quot;fail&quot;:
+655              continue
+656          sql_key = normalize_sql(row[&quot;sql_text&quot;])
+657          if sql_key in selected_sql:
+658              continue
+659          bucket_fail_pool.setdefault(build_distribution_bucket(row), []).append(row)
+660  
+661      for bucket in bucket_fail_pool:
+662          bucket_fail_pool[bucket] = _pick_diverse_rows(
+663              bucket_fail_pool[bucket],
+664              len(bucket_fail_pool[bucket]),
+665              stable_core_sql=stable_core_sql,
+666              previous_snapshot_sql=previous_snapshot_sql,
+667          )
+668  
+669      while current_fail_count &lt; target_fail_count:
+670          replaced = False
+671          for bucket in TARGET_BUCKETS:
+672              replacement_pool = bucket_fail_pool.get(bucket, [])
+673              if not replacement_pool:
+674                  continue
+675              removable_indices = [
+676                  index
+677                  for index, row in enumerate(balanced_rows)
+678                  if build_distribution_bucket(row) == bucket and row[&quot;gt_status&quot;] == &quot;pass&quot;
+679              ]
+680              if not removable_indices:
+681                  continue
+682              removable_indices.sort(
+683                  key=lambda index: (
+684                      _history_priority_key(
+685                          balanced_rows[index],
+686                          stable_core_sql=stable_core_sql,
+687                          previous_snapshot_sql=previous_snapshot_sql,
+688                      ),
+689                      len(infer_feature_labels(balanced_rows[index])),
+690                      balanced_rows[index][&quot;level2_category&quot;],
+691                  )
+692              )
+693              balanced_rows[removable_indices[0]] = replacement_pool.pop(0)
+694              current_fail_count += 1
+695              replaced = True
+696              if current_fail_count &gt;= target_fail_count:
+697                  break
+698          if not replaced:
+699              break
+700      return balanced_rows
+701  
+702  
+703  def deduplicate_rows(rows: Iterable[Dict[str, str]]) -&gt; Tuple[List[Dict[str, str]], int]:
+704      deduped: List[Dict[str, str]] = []
+705      seen_sql = set()
+706      duplicate_count = 0
+707      for row in rows:
+708          sql_key = normalize_sql(row[&quot;sql_text&quot;])
+709          if sql_key in seen_sql:
+710              duplicate_count += 1
+711              continue
+712          seen_sql.add(sql_key)
+713          deduped.append(deepcopy(row))
+714      return deduped, duplicate_count
+715  
+716  
+717  def quality_check_rows(rows: List[Dict[str, str]]) -&gt; List[str]:
+718      issues: List[str] = []
+719      for index, row in enumerate(rows, start=1):
+720          case_label = row.get(&quot;case_id&quot;, f&quot;ROW_{index}&quot;)
+721          if row[&quot;gt_status&quot;] not in {&quot;pass&quot;, &quot;fail&quot;}:
+722              issues.append(f&quot;{case_label}: gt_status 必须是 pass 或 fail&quot;)
+723          if not row[&quot;sql_text&quot;]:
+724              issues.append(f&quot;{case_label}: sql_text 不能为空&quot;)
+725          if row[&quot;source_tier&quot;] != &quot;real&quot;:
+726              issues.append(f&quot;{case_label}: source_tier 必须是 real&quot;)
+727          if not row[&quot;source_ref&quot;]:
+728              issues.append(f&quot;{case_label}: source_ref 不能为空&quot;)
+729          if row[&quot;gt_label_strength&quot;] not in ALLOWED_GT_LABEL_STRENGTHS:
+730              issues.append(f&quot;{case_label}: gt_label_strength 必须是 strong/medium/weak&quot;)
+731          if row[&quot;baseline_status&quot;] == &quot;fail&quot; and row[&quot;baseline_error_position&quot;] and not POSITION_PATTERN.match(
+732              row[&quot;baseline_error_position&quot;]
+733          ):
+734              issues.append(f&quot;{case_label}: baseline_error_position 必须是合法的行列格式&quot;)
+735      return issues
+736  </pre></div>
+  </div>
+  <script>
+    document.querySelectorAll("a").forEach((link) => {
+      link.setAttribute("target", "_blank");
+      link.setAttribute("rel", "noreferrer");
+    });
+  </script>
+</body>
+</html>

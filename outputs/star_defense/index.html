@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hive SQL 评测工程答辩展示</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --panel: #121a31;
+      --panel-2: #18233f;
+      --line: rgba(255, 255, 255, 0.1);
+      --text: #eef4ff;
+      --muted: #b8c5e2;
+      --accent: #78c6ff;
+      --accent-2: #8ce8bf;
+      --warn: #ffd47f;
+      --shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(120, 198, 255, 0.16), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(140, 232, 191, 0.12), transparent 25%),
+        var(--bg);
+      overflow: hidden;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px dashed rgba(120, 198, 255, 0.5);
+    }
+
+    .deck {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      padding: 34px 42px 64px;
+      gap: 16px;
+    }
+
+    .slide.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .page-title {
+      font-size: 28px;
+      line-height: 1.25;
+      font-weight: 800;
+      margin: 0 0 6px;
+      letter-spacing: 0.3px;
+    }
+
+    .cover-title {
+      font-size: 40px;
+      line-height: 1.25;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .subtitle {
+      font-size: 18px;
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.7;
+    }
+
+    .panel, .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .panel { padding: 20px 22px; }
+    .card { padding: 18px 18px; }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.22fr 0.78fr;
+      gap: 18px;
+      flex: 1;
+    }
+
+    .hero-left, .hero-right {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-height: 0;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .stat {
+      padding: 16px;
+      border-radius: 16px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+    }
+
+    .stat .label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .stat .value {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.15;
+    }
+
+    .stat .sub {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .em { color: var(--text); font-weight: 700; }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .four-col {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      color: var(--accent);
+    }
+
+    p, li {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    li + li { margin-top: 6px; }
+
+    .agenda {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      flex: 1;
+    }
+
+    .agenda-item {
+      padding: 16px 18px;
+      border-radius: 16px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+    }
+
+    .agenda-item .num {
+      color: var(--accent);
+      font-weight: 800;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .agenda-item .name {
+      color: var(--text);
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .flow,
+    .mini-flow {
+      display: flex;
+      gap: 6px;
+      align-items: stretch;
+      flex-wrap: nowrap;
+    }
+
+    .node {
+      min-height: 72px;
+      border-radius: 14px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 0;
+      min-width: 0;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 10px 10px;
+      color: var(--text);
+      gap: 6px;
+    }
+
+    .node-title {
+      width: 100%;
+      min-height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.2;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--accent-2);
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      white-space: normal;
+    }
+
+    .node-desc {
+      width: 100%;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      line-height: 1.35;
+      color: var(--text);
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      white-space: normal;
+    }
+
+    .arrow {
+      flex: 0 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 18px;
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    .project-flow-panel {
+      margin-top: 16px;
+      padding: 18px 20px;
+    }
+
+    .project-flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px 30px;
+      position: relative;
+      align-items: stretch;
+    }
+
+    .project-step {
+      position: relative;
+      min-height: 108px;
+      border-radius: 16px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 14px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      justify-content: center;
+      box-shadow: var(--shadow);
+    }
+
+    .project-step::after {
+      content: "→";
+      position: absolute;
+      right: -22px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--accent);
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .project-step:last-child::after {
+      display: none;
+    }
+
+    .project-step-title {
+      color: var(--accent-2);
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.25;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    .project-step-desc {
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1.45;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    .project-step-file {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .metric-table,
+    .link-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .metric-table th,
+    .metric-table td,
+    .link-table th,
+    .link-table td {
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 9px 8px;
+      vertical-align: top;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .metric-table th,
+    .link-table th {
+      color: var(--text);
+      font-size: 13px;
+      text-align: left;
+    }
+
+    .metric-table td strong,
+    .link-table td strong {
+      color: var(--text);
+    }
+
+    pre {
+      margin: 0;
+      padding: 16px;
+      border-radius: 14px;
+      background: #0d152b;
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #d7e5ff;
+      overflow: auto;
+      font-size: 13px;
+      line-height: 1.55;
+      font-family: "Cascadia Code", "Consolas", "Courier New", monospace;
+      white-space: pre-wrap;
+    }
+
+    .code-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .code-block h3,
+    .data-block h3 {
+      margin-bottom: 10px;
+    }
+
+    .stack {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 0;
+    }
+
+    .note {
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(120,198,255,0.08);
+      border: 1px solid rgba(120,198,255,0.16);
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .footer {
+      position: absolute;
+      left: 42px;
+      right: 42px;
+      bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .controls button {
+      border: 0;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--panel-2);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .progress {
+      width: 220px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+    }
+
+    .progress-inner {
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    }
+  </style>
+</head>
+<body>
+  <div class="deck">
+    <section class="slide active">
+      <div class="hero">
+        <div class="hero-left">
+          <div class="panel" style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+            <div class="tag-list" style="margin-bottom: 18px;">
+              <span class="tag">Hive SQL 评测工程</span>
+              <span class="tag">数据集治理 + 解析评测</span>
+            </div>
+            <h1 class="cover-title">基于大数据开发套件智能体构建全方位评测体系</h1>
+            <p class="subtitle" style="margin-top: 18px;">
+              子课题：发布Agent - Hive SQL 评测集沉淀与 Hive 解析能力验证
+            </p>
+            <p class="subtitle" style="margin-top: 14px;">
+              核心目标：构建可自动化生产、扩充与维护的 Hive SQL 黄金评测集，并完成结果字段记录、版本治理与报告沉淀。
+            </p>
+          </div>
+          <div class="panel">
+            <table class="metric-table">
+              <tr><th>关键词</th><th>当前项目状态</th></tr>
+              <tr><td><strong>数据集</strong></td><td>100 条最终黄金集样本 + 455 条待审池</td></tr>
+              <tr><td><strong>来源</strong></td><td>官方文档 + open benchmark + parser unit</td></tr>
+              <tr><td><strong>评测方式</strong></td><td>GT 标准答案 + baseline 历史对照 + actual 当前结果</td></tr>
+              <tr><td><strong>版本治理</strong></td><td>历史快照 + 稳定核心 + 待审池</td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div class="stat">
+            <div class="label">原始抓取总量</div>
+            <div class="value">4061</div>
+            <div class="sub">224 + 3186 + 651</div>
+          </div>
+          <div class="stat">
+            <div class="label">去重后高可信候选池</div>
+            <div class="value">2457</div>
+            <div class="sub">高可信真值样本且 SQL 去重后</div>
+          </div>
+          <div class="stat">
+            <div class="label">最终黄金集</div>
+            <div class="value">100</div>
+            <div class="sub">QUERY 50 / DDL 20 / DML 20 / UTILITY 10</div>
+          </div>
+          <div class="stat">
+            <div class="label">版本治理</div>
+            <div class="value">快照治理</div>
+            <div class="sub">读取历史版本并优先保留稳定核心</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="page-title">目录</h2>
+      <div class="agenda">
+          <div class="agenda-item">
+            <div class="num">01</div>
+            <div class="name">背景与目标</div>
+            <p>项目为什么这样设计，以及最终要交付什么。</p>
+          </div>
+          <div class="agenda-item">
+            <div class="num">02</div>
+            <div class="name">工程流程与实现</div>
+            <p>从多源采集、建集、评测到报告沉淀的完整闭环。</p>
+          </div>
+          <div class="agenda-item">
+            <div class="num">03</div>
+            <div class="name">关键代码与原理</div>
+            <p>主链路怎么串起来，评分和 SDK 桥接怎么落地。</p>
+          </div>
+          <div class="agenda-item">
+            <div class="num">04</div>
+            <div class="name">难点与治理</div>
+            <p>多源真实性、结构平衡、版本治理和稳定性如何处理。</p>
+          </div>
+          <div class="agenda-item">
+            <div class="num">05</div>
+            <div class="name">落地价值与备查材料</div>
+            <p>应用价值、改进方向，以及答疑时可快速打开的材料页面。</p>
+          </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="page-title">01 背景与目标-项目背景</h2>
+      <div class="two-col">
+        <div class="card">
+          <h3>课题文档给出的核心要求</h3>
+          <ul>
+            <li>围绕 <span class="em">评测数据集搭建</span> 与 <span class="em">智能响应结果模拟校验</span> 两个核心环节展开。</li>
+            <li>目标不是单次跑通，而是输出可量化、可维护、可复用的评测底座。</li>
+            <li>子课题要求明确提出：要做多源自动化采集、版本演进、质量门禁与轻量解析验证链路。</li>
+          </ul>
+          <p style="margin-top: 12px;">
+            课题文档参考：
+            <a href="./pages/course_doc.html">课题说明原文</a>
+          </p>
+        </div>
+        <div class="card">
+          <h3>为什么不能用一个简单脚本解决</h3>
+          <ul>
+            <li>项目要求数据集构建和评测执行分离，因此 GT、baseline、actual 不能混成一层结果。</li>
+            <li>如果只有解析通过率，没有负样本和错误粒度，报告会失真。</li>
+            <li>如果没有版本快照与稳定性分析，黄金集每次重跑都可能换题，无法作为长期资产复用。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="mini-flow" style="margin-top: 14px;">
+        <div class="node"><span class="node-title">课题要求</span><span class="node-desc">自动化、可维护、可扩充</span></div>
+        <div class="arrow">→</div>
+        <div class="node"><span class="node-title">项目策略</span><span class="node-desc">多源真实来源</span></div>
+        <div class="arrow">→</div>
+        <div class="node"><span class="node-title">评测策略</span><span class="node-desc">GT / baseline / actual 分工记录</span></div>
+        <div class="arrow">→</div>
+        <div class="node"><span class="node-title">治理策略</span><span class="node-desc">版本快照 + 稳定核心</span></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="page-title">01 背景与目标-交付结果</h2>
+      <div class="four-col">
+        <div class="stat">
+          <div class="label">最终黄金集</div>
+          <div class="value">100</div>
+          <div class="sub">只保留高可信真值样本</div>
+        </div>
+        <div class="stat">
+          <div class="label">待审池</div>
+          <div class="value">455</div>
+          <div class="sub">中低可信样本隔离保留</div>
+        </div>
+        <div class="stat">
+          <div class="label">GT 强度</div>
+          <div class="value">100% 高可信</div>
+          <div class="sub">最终黄金集无中低可信样本</div>
+        </div>
+      </div>
+      <div class="two-col" style="margin-top: 14px;">
+        <div class="card">
+          <h3>核心交付物</h3>
+          <table class="metric-table">
+            <tr><th>产物</th><th>作用</th></tr>
+            <tr><td><a href="./pages/gold_dataset.html">最终黄金集页面</a></td><td>100 条最终黄金集样本，答辩最核心数据资产</td></tr>
+            <tr><td><a href="./pages/review_candidates.html">待审池页面</a></td><td>后续继续升标与扩充的入口</td></tr>
+            <tr><td><a href="./pages/eval_report.html">主评测报告页面</a></td><td>展示解析器表现与评分分布</td></tr>
+            <tr><td><a href="./pages/gold_iteration.html">迭代方案页面</a></td><td>解释稳定性、待审池与版本治理</td></tr>
+            <tr><td><a href="./pages/independence_audit.html">样本约束页面</a></td><td>说明最终黄金集的高可信样本约束</td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <h3>当前结果摘要</h3>
+          <table class="metric-table">
+            <tr><th>指标</th><th>结果</th></tr>
+            <tr><td>解析通过率</td><td><strong>48.00%</strong> = 48/100</td></tr>
+            <tr><td>正样本通过率</td><td><strong>94.12%</strong> = 48/51</td></tr>
+            <tr><td>负样本命中率</td><td><strong>100.00%</strong> = 49/49</td></tr>
+            <tr><td>与标准答案完全一致的比例</td><td><strong>94.00%</strong> = 94/100</td></tr>
+            <tr><td>达到可用结果的比例</td><td><strong>97.00%</strong> = 97/100</td></tr>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="page-title">02 工程流程与实现-整体架构</h2>
+      <div class="flow">
+        <div class="node"><span class="node-title">官方文档</span><span class="node-desc">自动发现 + 缓存</span></div>
+        <div class="arrow">→</div>
+        <div class="node"><span class="node-title">benchmark</span><span class="node-desc">目录断言 + 拆 SQL</span></div>
+        <div class="arrow">→</div>
+        <div class="node"><span class="node-title">parser unit</span><span class="node-desc">Java 单测反抽样</span></div>
+        <div class="arrow">→</div>
+        <div class="node"><span class="node-title">清洗 / 高可信候选池</span><span class="node-desc">3943 → 3488 → 2457</span></div>
+        <div class="arrow">→</div>
+        <div class="node"><span class="node-title">最终 100 条</span><span class="node-desc">评测 + 报告 + 版本快照</span></div>
+      </div>
+      <div class="two-col" style="margin-top: 16px;">
+        <div class="card">
+          <h3>工程分层</h3>
+          <table class="metric-table">
+            <tr><th>层级</th><th>职责</th><th>关键脚本</th></tr>
+            <tr><td><strong>cli</strong></td><td>命令入口，负责一键执行</td><td><a href="./pages/run_eval_code.html">run_eval.py</a></td></tr>
+            <tr><td><strong>pipelines</strong></td><td>采集、建集、样本约束、版本快照</td><td><a href="./pages/dataset_pipeline_code.html">dataset_pipeline.py</a></td></tr>
+            <tr><td><strong>adapters</strong></td><td>Python 对 Java Hive Parse SDK 桥接</td><td><a href="./pages/sdk_bridge_code.html">hive_parser_sdk.py</a></td></tr>
+            <tr><td><strong>reporting</strong></td><td>评分、能力分析、稳定性与迭代报告</td><td><a href="./pages/evaluator_code.html">evaluator.py</a></td></tr>
+            <tr><td><strong>core</strong></td><td>分类规则、配置、工具函数</td><td><a href="./pages/case_taxonomy_code.html">case_taxonomy.py</a></td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <h3>完整项目运行流程</h3>
+          <p>一键运行时，项目会按“建集 → raw-source baseline 冻结 → 实际评测 → 报告落盘”的顺序完成完整闭环。</p>
+          <p>入口代码：<a href="./pages/run_eval_code.html">run_eval.py</a></p>
+        </div>
+      </div>
+      <div class="panel project-flow-panel">
+        <h3 style="margin: 0 0 12px; color: var(--accent);">完整项目运行流程图</h3>
+        <div class="project-flow">
+          <div class="project-step">
+            <div class="project-step-title">1. 命令入口</div>
+            <div class="project-step-desc">读取项目配置，启动一键执行主链路。</div>
+            <div class="project-step-file">run_eval.main</div>
+          </div>
+          <div class="project-step">
+            <div class="project-step-title">2. 多源采集与建集</div>
+            <div class="project-step-desc">刷新 official / benchmark / parser unit，完成清洗、高可信过滤、去重与 100 条规则选样。</div>
+            <div class="project-step-file">build_curated_dataset / select_target_rows</div>
+          </div>
+          <div class="project-step">
+            <div class="project-step-title">3. 候选池阶段冻结 baseline</div>
+            <div class="project-step-desc">对原始多源候选池首次写入 baseline，对后续版本保留历史对照，并检查最终黄金集样本约束。</div>
+            <div class="project-step-file">freeze_real_source_baselines / assert_gt_baseline_independence</div>
+          </div>
+          <div class="project-step">
+            <div class="project-step-title">4. 批量解析生成 actual</div>
+            <div class="project-step-desc">Python 调 Java Hive Parse SDK，返回 actual_status、错误类型和位置。</div>
+            <div class="project-step-file">evaluate_cases / hive_parser_sdk.parse_sql_rows</div>
+          </div>
+          <div class="project-step">
+            <div class="project-step-title">5. 评分与报告生成</div>
+            <div class="project-step-desc">依据标准答案对当前结果做三档评分，并输出 CSV、Markdown、HTML 包装页。</div>
+            <div class="project-step-file">score_label_pair / build_report / generate_star_defense_pages.py</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="page-title">02 工程流程与实现-数据集构建</h2>
+      <div class="two-col">
+        <div class="card data-block">
+          <h3>数量口径</h3>
+          <table class="metric-table">
+            <tr><th>阶段</th><th>样本数</th><th>说明</th></tr>
+            <tr><td><strong>原始抓取总量</strong></td><td>4061</td><td>224 + 3186 + 651</td></tr>
+            <tr><td><strong>清洗后真实候选</strong></td><td>3943</td><td>只做有效性过滤，不做跨来源 SQL 去重</td></tr>
+            <tr><td><strong>高可信候选池</strong></td><td>3488</td><td>只保留 gt_status 明确且真值可信度足够高的样本</td></tr>
+            <tr><td><strong>去重后高可信候选池</strong></td><td>2457</td><td>按标准化 SQL 去重</td></tr>
+            <tr><td><strong>待审池</strong></td><td>455</td><td>中低可信样本保留待审，不参与最终评分</td></tr>
+            <tr><td><strong>最终黄金集</strong></td><td>100</td><td>按结构分布、平衡与覆盖约束沉淀</td></tr>
+          </table>
+        </div>
+        <div class="card data-block">
+          <h3>最终 100 条怎么选出来</h3>
+          <div class="mini-flow">
+            <div class="node"><span class="node-title">按四类结构初选</span><span class="node-desc">QUERY/DDL/DML/UTILITY</span></div>
+            <div class="arrow">→</div>
+            <div class="node"><span class="node-title">正负再平衡</span><span class="node-desc">接近 51 / 49</span></div>
+            <div class="arrow">→</div>
+            <div class="node"><span class="node-title">错误类型补洞</span><span class="node-desc">负样本粒度覆盖</span></div>
+            <div class="arrow">→</div>
+            <div class="node"><span class="node-title">特性覆盖补洞</span><span class="node-desc">update / delete 等</span></div>
+          </div>
+          <p style="margin-top: 12px;">
+            相关代码入口：
+            <a href="./pages/dataset_pipeline_code.html">build_curated_datasets / select_target_rows</a>
+          </p>
+          <p>当前选样是固定规则选样，不使用随机抽样；在输入候选池不变时，会收敛到同一版黄金集。</p>
+        </div>
+      </div>
+      <div class="three-col" style="margin-top: 14px;">
+        <div class="card">
+          <h3>官方文档来源</h3>
+          <p>直接从 Hive 官方页面自动发现、缓存 HTML、抽取代码块。</p>
+          <p><a href="https://hive.apache.org/docs/latest/language/" target="_blank" rel="noreferrer">跳转到 Hive 官方文档真实来源页面</a></p>
+        </div>
+        <div class="card">
+          <h3>benchmark 来源</h3>
+          <p>从 Apache Hive 开源测试目录拆 SQL，正负目录分别给出强/弱证据。</p>
+          <p><a href="https://github.com/apache/hive/tree/master/ql/src/test/queries/clientpositive" target="_blank" rel="noreferrer">跳转到 Apache Hive benchmark 真实来源页面</a></p>
+        </div>
+        <div class="card">
+          <h3>parser unit 来源</h3>
+          <p>从 Java 单测中恢复字符串表达式，补强真实负样本与复杂语法样本。</p>
+          <p><a href="https://github.com/apache/hive/blob/master/parser/src/test/org/apache/hadoop/hive/ql/parse/TestSpecialCharacterInTableNamesQuotes.java" target="_blank" rel="noreferrer">跳转到 parser unit 真实来源页面</a></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="page-title">03 关键代码与原理-评测原理</h2>
+      <div class="two-col">
+        <div class="card">
+          <h3>三层结果必须分离</h3>
+          <div class="mini-flow">
+            <div class="node"><span class="node-title is-accent">GT（标准答案）</span><span class="node-desc">来源侧真值标签</span></div>
+            <div class="arrow">→</div>
+            <div class="node"><span class="node-title">baseline（历史对照）</span><span class="node-desc">原始候选池冻结对照</span></div>
+            <div class="arrow">→</div>
+            <div class="node"><span class="node-title is-accent">actual（当前结果）</span><span class="node-desc">本次运行结果</span></div>
+            <div class="arrow">→</div>
+            <div class="node"><span class="node-title">三档评分</span><span class="node-desc">2 / 1 / 0</span></div>
+          </div>
+          <p style="margin-top: 12px;">
+            评分标准说明：
+            <a href="./pages/parse_standard.html">评分标准页面</a>
+          </p>
+          <p>
+            样本约束说明：
+            <a href="./pages/independence_audit.html">黄金集样本约束页面</a>
+          </p>
+          <p>baseline 和 actual 同时保留评测对齐字段与 SDK 原始字段：前者用于评分，后者用于排查。</p>
+        </div>
+        <div class="card">
+          <h3>当前评测结果</h3>
+          <table class="metric-table">
+            <tr><th>指标</th><th>结果</th></tr>
+            <tr><td>解析通过率</td><td><strong>48.00%</strong></td></tr>
+            <tr><td>正样本通过率</td><td><strong>94.12%</strong></td></tr>
+            <tr><td>负样本命中率</td><td><strong>100.00%</strong></td></tr>
+            <tr><td>与标准答案完全一致率（GT 严格一致率）</td><td><strong>94.00%</strong></td></tr>
+            <tr><td>达到可用结果的比例（GT 可用匹配率）</td><td><strong>97.00%</strong></td></tr>
+            <tr><td>三档评分分布（2 / 1 / 0）</td><td><strong>94 / 3 / 3</strong></td></tr>
+          </table>
+          <p style="margin-top: 12px;">
+            主报告：
+            <a href="./pages/eval_report.html">主评测报告页面</a>
+          </p>
+          <p>
+            0 分样本补充：
+            <a href="./pages/zero_score_cases.html">3 个 0 分样本补充页面</a>
+          </p>
+        </div>
+      </div>
+      <div class="panel" style="margin-top: 14px;">
+        <h3 style="margin: 0 0 8px; color: var(--accent);">为什么“与标准答案完全一致率”不一定等于解析通过率</h3>
+        <p>
+          解析通过率只统计当前结果里有多少条被判成 pass；而“与标准答案完全一致率”统计的是当前结果是否和标准答案完全一致，既包括正样本通过，也包括负样本失败且错误粒度一致。当前这版结果中，对齐字段已经让绝大多数负样本进入严格一致统计，所以该指标提升到 94%，并明显高于解析通过率 48%。
+        </p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="page-title">03 关键代码与原理-关键代码</h2>
+      <div class="code-grid">
+        <div class="card code-block">
+          <h3>入口脚本：一键跑完整链路</h3>
+          <pre>def main() -> None:
+    parser_backend = "sdk"
+    build_summary = build_curated_dataset()
+    real_cases = load_curated_cases(CURATED_DATASET)
+    real_results = evaluate_cases(real_cases, parser_backend=parser_backend)
+    write_results(real_results, EVAL_RESULT_CSV)
+    write_report(build_report(...), EVAL_REPORT_MD)
+    build_gold_stability_report(...)
+    build_gold_iteration_report(...)</pre>
+          <p style="margin-top: 10px;">
+            文件：
+            <a href="./pages/run_eval_code.html">run_eval.py</a>
+          </p>
+        </div>
+        <div class="card code-block">
+          <h3>选样逻辑：先初选，再平衡，再补洞</h3>
+          <pre>def select_target_rows(...):
+    for bucket, target_count in TARGET_BUCKETS.items():
+        bucket_rows = _balanced_bucket_pick(...)
+        selected_rows.extend(bucket_rows)
+
+    balanced_rows = rebalance_status_ratio(...)
+    balanced_rows = ensure_negative_error_coverage(...)
+    return ensure_feature_coverage(...)</pre>
+          <p style="margin-top: 10px;">
+            文件：
+            <a href="./pages/dataset_pipeline_code.html">dataset_pipeline.py</a>
+          </p>
+        </div>
+      </div>
+      <div class="code-grid" style="margin-top: 14px;">
+        <div class="card code-block">
+          <h3>评分逻辑：不是只看通过或失败，而是三档评分</h3>
+          <pre>def score_label_pair(gt_row, actual_row):
+    if status 完全一致 and 细节完全一致:
+        return 2
+    if status 一致 but 错误家族或位置部分命中:
+        return 1
+    return 0</pre>
+          <p style="margin-top: 10px;">
+            文件：
+            <a href="./pages/evaluator_code.html">evaluator.py</a>
+          </p>
+          <p class="note" style="margin-top: 10px;">
+            真实实现位置：src/reporting/evaluator.py 中的 score_label_pair；当前实际代码位于第 84-122 行，真实打分比较的是 status、error_type 和 error_subtype，这里代码块是讲解用简化伪代码。
+          </p>
+        </div>
+        <div class="card code-block">
+          <h3>SDK 桥接：Python 调 Java Hive Parse SDK</h3>
+          <pre>def parse_sql_rows(rows):
+    ensure_sdk_compiled()
+    payload_path = write_jsonl(rows)
+    output_path = run_java_cli(payload_path)
+    return read_sdk_output(output_path)</pre>
+          <p style="margin-top: 10px;">
+            文件：
+            <a href="./pages/sdk_bridge_code.html">hive_parser_sdk.py</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="page-title">04 难点与治理-问题与解法</h2>
+      <div class="two-col">
+        <div class="card">
+          <h3>难点 1：多源真实性差异</h3>
+          <ul>
+            <li>问题：官方文档、benchmark、parser unit 的证据强度并不相同，不能直接混用。</li>
+            <li>解决：strong / medium / weak 分层，中低可信样本进入待审池。</li>
+            <li>结果：最终黄金集只保留高可信真值样本，待审池保留后续升标入口。</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>难点 2：版本抖动</h3>
+          <ul>
+            <li>问题：同桶近似样本在不同版本间容易小范围轮换。</li>
+            <li>解决：优先保留稳定核心和上一版样本，避免无谓轮换。</li>
+            <li>结果：固定输入下单次运行即可收敛，版本治理重点转为“变化时如何有理由替换”。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="panel" style="margin-top: 14px;">
+        <h3 style="margin: 0 0 8px; color: var(--accent);">治理结果</h3>
+        <p>
+          项目通过高可信、中等可信、低可信分层处理多源真实性差异，同时把后处理逻辑改成优先保护稳定核心和上一版样本，在仍然保留再平衡和覆盖补洞能力的前提下，避免无意义漂移。
+        </p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="page-title">04 难点与治理-版本治理</h2>
+      <div class="three-col" style="margin-top: 14px;">
+        <div class="card">
+          <h3>概念 1：初始黄金候选集</h3>
+          <p>初始版本更准确地说是“初始黄金候选集”，它是从当时可获得的高可信候选池中，按结构分布、正负平衡和覆盖补洞规则选出来的第一版可用结果。</p>
+        </div>
+        <div class="card">
+          <h3>概念 2：最终黄金集</h3>
+          <p>最终黄金集不是第一版结果的直接复述，而是在历史快照、稳定核心保护和必要替换规则下，逐步收敛出来的可维护版本。</p>
+        </div>
+        <div class="card">
+          <h3>概念 3：待审池</h3>
+          <p>待审池不是附属产物，而是版本演进的重要输入。来源刷新、人工升标和覆盖补洞，都会优先从待审池里推动下一版变化。</p>
+        </div>
+      </div>
+      <div class="mini-flow" style="margin-top: 14px;">
+        <div class="node"><span class="node-title">来源刷新 / 升标</span><span class="node-desc">候选池发生变化</span></div>
+        <div class="arrow">→</div>
+        <div class="node"><span class="node-title">读取历史快照</span><span class="node-desc">stable_core_sql</span></div>
+        <div class="arrow">→</div>
+        <div class="node"><span class="node-title">优先保留稳定核心</span><span class="node-desc">再做必要替换</span></div>
+        <div class="arrow">→</div>
+        <div class="node"><span class="node-title">形成下一版黄金集</span><span class="node-desc">输出新快照</span></div>
+      </div>
+      <div class="note" style="margin-top: 12px;">
+        固定输入下，项目单次运行就能得到当前黄金集；当候选池发生变化时，系统会读取历史快照并优先保留稳定核心，只做有净收益的替换。
+        版本索引见 <a href="./pages/version_manifest.html">manifest 页面</a>。
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="page-title">04 难点与治理-3 个 0 分样本补充页</h2>
+      <div class="two-col">
+        <div class="card">
+          <h3>样本清单与共同特征</h3>
+          <table class="metric-table">
+            <tr><th>case_id</th><th>类别</th><th>来源</th><th>GT / actual</th></tr>
+            <tr><td>HIVE_REAL_016</td><td>QUERY / WINDOW</td><td>Hive 官方文档</td><td>pass / fail</td></tr>
+            <tr><td>HIVE_REAL_038</td><td>QUERY / WINDOW</td><td>Hive 官方文档</td><td>pass / fail</td></tr>
+            <tr><td>HIVE_REAL_040</td><td>QUERY / LATERAL_VIEW</td><td>Hive 官方文档</td><td>pass / fail</td></tr>
+          </table>
+          <ul style="margin-top: 12px;">
+            <li>3 条样本全部来自高可信正样本。</li>
+            <li>3 条样本全部是 baseline=0、actual=0，不是本次运行新增退化。</li>
+            <li>共同结论：当前 Hive Parse SDK 对部分 `WINDOW` 与 `LATERAL VIEW` 正样本仍有解析缺口。</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>为什么保留在黄金集里</h3>
+          <ul>
+            <li>这 3 条样本都来自 Hive 官方文档，来源强、GT 强，不属于弱证据样本。</li>
+            <li>`WINDOW` 与 `LATERAL_VIEW` 都是当前黄金集必须保留的关键特性覆盖点。</li>
+            <li>它们满足“覆盖缺口优先”，但不满足“当前解析器容易通过”。</li>
+            <li>因此当前版本选择真实暴露能力缺口，而不是通过替换样本抬高通过率。</li>
+          </ul>
+          <p style="margin-top: 12px;">补充材料：<a href="./pages/zero_score_cases.html">zero_score_cases.html</a></p>
+        </div>
+      </div>
+      <div class="panel" style="margin-top: 14px;">
+        <h3 style="margin: 0 0 8px; color: var(--accent);">样本保留判断</h3>
+        <p>
+          这 3 个 0 分样本不是版本轮换边缘造成的问题样本，而是官方文档高可信正样本中的真实解析缺口。当前项目优先保留真实来源与关键覆盖，因此没有为了提升通过率而把它们替换出去。
+        </p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="page-title">05 落地价值与材料-应用价值</h2>
+      <div class="two-col">
+        <div class="card">
+          <h3>应用价值</h3>
+          <ul>
+            <li>把人工零散验 SQL 变成自动化评测流水线，提高研发、测试、回归效率。</li>
+            <li>把评测集沉淀成 CSV 资产，便于协作、版本管理和下游复用。</li>
+            <li>GT、baseline、actual 分别记录后，评测报告更易解释，方便定位是历史对照变化还是本次解析结果变化。</li>
+            <li>版本快照与待审池机制让数据集可以长期运营，而不是一次性产物。</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>可以继续优化的地方</h3>
+          <ul>
+            <li>当前仍偏语法层评测，后续可继续补语义执行与上下文级验证。</li>
+            <li>待审池升标仍要人工参与，后续可做半自动审校策略，降低人力成本。</li>
+            <li>多次完整重跑会重复执行解析，可加入中间结果缓存以减少资源消耗。</li>
+            <li>`within_group` 等特性仍有覆盖缺口，后续应继续补强高可信真值样本。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="panel" style="margin-top: 14px;">
+        <h3 style="margin: 0 0 8px; color: var(--accent);">一句话落地总结</h3>
+        <p>
+          这个项目最大的应用价值，不是单次跑出一个报告，而是沉淀了一套可以复用于后续 Parser / Agent 的评测底座：数据集可维护、评测逻辑可解释、版本治理可追踪。
+        </p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="page-title">05 落地价值与材料-材料索引</h2>
+      <div class="two-col">
+        <div class="card">
+          <h3>数据集与来源材料</h3>
+          <table class="link-table">
+            <tr><th>材料</th><th>点击查看</th></tr>
+            <tr><td>最终黄金集</td><td><a href="./pages/gold_dataset.html">gold_dataset.html</a></td></tr>
+            <tr><td>待审池</td><td><a href="./pages/review_candidates.html">review_candidates.html</a></td></tr>
+            <tr><td>官方文档真实来源</td><td><a href="https://hive.apache.org/docs/latest/language/" target="_blank" rel="noreferrer">Hive 官方语言文档</a></td></tr>
+            <tr><td>benchmark 真实来源</td><td><a href="https://github.com/apache/hive/tree/master/ql/src/test/queries/clientpositive" target="_blank" rel="noreferrer">Apache Hive clientpositive</a></td></tr>
+            <tr><td>parser unit 真实来源</td><td><a href="https://github.com/apache/hive/blob/master/parser/src/test/org/apache/hadoop/hive/ql/parse/TestSpecialCharacterInTableNamesQuotes.java" target="_blank" rel="noreferrer">TestSpecialCharacterInTableNamesQuotes.java</a></td></tr>
+            <tr><td>版本索引</td><td><a href="./pages/version_manifest.html">version_manifest.html</a></td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <h3>报告与代码入口</h3>
+          <table class="link-table">
+            <tr><th>材料</th><th>点击查看</th></tr>
+            <tr><td>主评测报告</td><td><a href="./pages/eval_report.html">eval_report.html</a></td></tr>
+            <tr><td>评分原理</td><td><a href="./pages/parse_standard.html">parse_standard.html</a></td></tr>
+            <tr><td>样本约束说明</td><td><a href="./pages/independence_audit.html">independence_audit.html</a></td></tr>
+            <tr><td>黄金集迭代方案</td><td><a href="./pages/gold_iteration.html">gold_iteration.html</a></td></tr>
+            <tr><td>3 个 0 分样本补充</td><td><a href="./pages/zero_score_cases.html">zero_score_cases.html</a></td></tr>
+            <tr><td>项目 GitHub</td><td><a href="https://github.com/Scott-Ye/Hive_SQL_Evaluation" target="_blank" rel="noreferrer">Hive_SQL_Evaluation</a></td></tr>
+            <tr><td>完整运行入口</td><td><a href="./pages/run_eval_code.html">run_eval_code.html</a></td></tr>
+            <tr><td>建集总控</td><td><a href="./pages/dataset_pipeline_code.html">dataset_pipeline_code.html</a></td></tr>
+            <tr><td>评分逻辑</td><td><a href="./pages/evaluator_code.html">evaluator_code.html</a></td></tr>
+            <tr><td>SDK 桥接</td><td><a href="./pages/sdk_bridge_code.html">sdk_bridge_code.html</a></td></tr>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="page-title">感谢聆听-Q&amp;A</h2>
+      <div class="panel" style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+        <div class="cover-title" style="font-size: 34px;">感谢聆听</div>
+        <div class="cover-title" style="font-size: 34px; margin-top: 10px;">Q&amp;A</div>
+      </div>
+    </section>
+
+    <div class="footer">
+      <div class="controls">
+        <button id="prevBtn">上一页</button>
+        <button id="nextBtn">下一页</button>
+        <span id="pageInfo">1 / 13</span>
+      </div>
+      <div class="progress"><div class="progress-inner" id="progressInner"></div></div>
+    </div>
+  </div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const pageInfo = document.getElementById("pageInfo");
+    const progressInner = document.getElementById("progressInner");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    let current = 0;
+
+    function render() {
+      slides.forEach((slide, index) => slide.classList.toggle("active", index === current));
+      pageInfo.textContent = `${current + 1} / ${slides.length}`;
+      progressInner.style.width = `${((current + 1) / slides.length) * 100}%`;
+    }
+
+    function move(offset) {
+      current = Math.max(0, Math.min(slides.length - 1, current + offset));
+      render();
+    }
+
+    prevBtn.addEventListener("click", () => move(-1));
+    nextBtn.addEventListener("click", () => move(1));
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") move(1);
+      if (event.key === "ArrowLeft" || event.key === "PageUp") move(-1);
+      if (event.key === "Home") { current = 0; render(); }
+      if (event.key === "End") { current = slides.length - 1; render(); }
+    });
+
+    document.querySelectorAll("a").forEach((link) => {
+      link.setAttribute("target", "_blank");
+      link.setAttribute("rel", "noreferrer");
+    });
+
+    render();
+  </script>
+</body>
+</html>

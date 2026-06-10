@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>评分逻辑：evaluator.py</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #0b1120;
+      color: #eef4ff;
+    }
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 28px 48px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+    }
+    .sub {
+      color: #b8c5e2;
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 22px;
+    }
+    .card {
+      background: #121a31;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 16px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+    h2 {
+      margin: 0 0 10px;
+      color: #78c6ff;
+      font-size: 20px;
+    }
+    p, li {
+      color: #b8c5e2;
+      line-height: 1.75;
+      font-size: 15px;
+    }
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .rich p {
+      margin: 0 0 12px;
+    }
+    .rich h2, .rich h3, .rich h4 {
+      margin: 18px 0 10px;
+      color: #78c6ff;
+    }
+    .rich strong {
+      color: #eef4ff;
+      font-weight: 800;
+    }
+    .rich em {
+      color: #d7e5ff;
+      font-style: italic;
+    }
+    .rich code {
+      background: rgba(255,255,255,0.07);
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-family: "Cascadia Code", "Consolas", monospace;
+      color: #eef4ff;
+      font-size: 13px;
+    }
+    .rich img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 10px 0;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      table-layout: fixed;
+    }
+    th, td {
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 8px 8px;
+      text-align: left;
+      vertical-align: top;
+      color: #b8c5e2;
+      line-height: 1.6;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+    th {
+      color: #eef4ff;
+    }
+    pre {
+      margin: 0;
+      padding: 16px;
+      background: #0d152b;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: auto;
+      line-height: 1.55;
+      font-size: 13px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      color: #d7e5ff;
+      font-family: "Cascadia Code", "Consolas", monospace;
+    }
+    a {
+      color: #78c6ff;
+      text-decoration: none;
+      border-bottom: 1px dashed rgba(120,198,255,0.45);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>评分逻辑：evaluator.py</h1>
+    <div class="sub">来源文件：C:\Users\INT\Desktop\工程训练营-构建大数据开发套件智能体评估体系\src\reporting\evaluator.py</div>
+    <div class="card"><h2>score_label_pair</h2><pre> 90      observed_error_type: str,
+ 91      observed_error_subtype: str,
+ 92  ) -&gt; int:
+ 93      if gt_status != observed_status:
+ 94          return 0
+ 95      if gt_status == &quot;pass&quot;:
+ 96          return 2
+ 97  
+ 98      detail_total = 0
+ 99      exact_hits = 0
+100      partial_hits = 0
+101  
+102      if gt_error_type:
+103          detail_total += 1
+104          if gt_error_type == observed_error_type:
+105              exact_hits += 1
+106          elif _error_type_matches(gt_error_type, observed_error_type):
+107              partial_hits += 1
+108  
+109      if gt_error_subtype:
+110          detail_total += 1
+111          if gt_error_subtype == observed_error_subtype:
+112              exact_hits += 1
+113          elif _error_subtype_matches(gt_error_subtype, observed_error_subtype):
+114              partial_hits += 1
+115  
+116      if detail_total == 0:
+117          return 2
+118      if exact_hits == detail_total:
+119          return 2
+120      if exact_hits &gt; 0 or partial_hits &gt; 0:
+121          return 1
+122      return 0
+123  
+124  
+125  def _grade_from_score(score: int) -&gt; str:
+126      if score == 2:
+127          return &quot;exact&quot;
+128      if score == 1:
+129          return &quot;partial&quot;
+130      return &quot;miss&quot;
+131  
+132  
+133  def score_case(row: Dict[str, str]) -&gt; int:
+134      return score_label_pair(
+135          gt_status=row[&quot;gt_status&quot;],
+136          gt_error_type=row[&quot;gt_error_type&quot;],
+137          gt_error_subtype=row[&quot;gt_error_subtype&quot;],</pre></div><div class="card"><h2>evaluate_cases</h2><pre>189              actual_score = score_label_pair(
+190                  gt_status=case[&quot;gt_status&quot;],
+191                  gt_error_type=case[&quot;gt_error_type&quot;],
+192                  gt_error_subtype=case[&quot;gt_error_subtype&quot;],
+193                  observed_status=actual_status,
+194                  observed_error_type=actual_error_type,
+195                  observed_error_subtype=actual_error_subtype,
+196              )
+197              baseline_score = score_label_pair(
+198                  gt_status=case[&quot;gt_status&quot;],
+199                  gt_error_type=case[&quot;gt_error_type&quot;],
+200                  gt_error_subtype=case[&quot;gt_error_subtype&quot;],
+201                  observed_status=case[&quot;baseline_status&quot;],
+202                  observed_error_type=case[&quot;baseline_error_type&quot;],
+203                  observed_error_subtype=case[&quot;baseline_error_subtype&quot;],
+204              )
+205              match_result = &quot;pass&quot; if actual_score == 2 else &quot;fail&quot;
+206  
+207              results.append(
+208                  {
+209                      &quot;case_id&quot;: case[&quot;case_id&quot;],
+210                      &quot;level1_category&quot;: case[&quot;level1_category&quot;],
+211                      &quot;level2_category&quot;: case[&quot;level2_category&quot;],
+212                      &quot;difficulty&quot;: case[&quot;difficulty&quot;],
+213                      &quot;gt_status&quot;: case[&quot;gt_status&quot;],
+214                      &quot;actual_status&quot;: actual_status,
+215                      &quot;gt_error_type&quot;: case[&quot;gt_error_type&quot;],
+216                      &quot;gt_error_subtype&quot;: case[&quot;gt_error_subtype&quot;],
+217                      &quot;actual_error_type&quot;: actual_error_type,
+218                      &quot;actual_error_subtype&quot;: actual_error_subtype,
+219                      &quot;actual_error_type_raw&quot;: actual_error_type_raw,
+220                      &quot;actual_error_subtype_raw&quot;: actual_error_subtype_raw,
+221                      &quot;actual_error_position&quot;: actual_error_position,
+222                      &quot;gt_label_source&quot;: case[&quot;gt_label_source&quot;],
+223                      &quot;gt_label_strength&quot;: case[&quot;gt_label_strength&quot;],
+224                      &quot;baseline_status&quot;: case[&quot;baseline_status&quot;],
+225                      &quot;baseline_error_type&quot;: case[&quot;baseline_error_type&quot;],
+226                      &quot;baseline_error_subtype&quot;: case[&quot;baseline_error_subtype&quot;],
+227                      &quot;baseline_error_type_raw&quot;: case.get(&quot;baseline_error_type_raw&quot;, &quot;&quot;),
+228                      &quot;baseline_error_subtype_raw&quot;: case.get(&quot;baseline_error_subtype_raw&quot;, &quot;&quot;),
+229                      &quot;baseline_error_position&quot;: case[&quot;baseline_error_position&quot;],
+230                      &quot;baseline_label_source&quot;: case[&quot;baseline_label_source&quot;],
+231                      &quot;baseline_score&quot;: str(baseline_score),
+232                      &quot;baseline_grade&quot;: _grade_from_score(baseline_score),
+233                      &quot;actual_score&quot;: str(actual_score),
+234                      &quot;actual_grade&quot;: _grade_from_score(actual_score),
+235                      &quot;trace_id&quot;: f&quot;SDKBATCH{index:06d}&quot;,
+236                      &quot;parser_code&quot;: &quot;200&quot; if actual_status == &quot;pass&quot; else &quot;400&quot;,
+237                      &quot;parser_message&quot;: parser_message,
+238                      &quot;match_result&quot;: match_result,
+239                      &quot;source_tier&quot;: case[&quot;source_tier&quot;],
+240                      &quot;source&quot;: case[&quot;source&quot;],
+241                      &quot;source_ref&quot;: case[&quot;source_ref&quot;],
+242                      &quot;tags&quot;: case[&quot;tags&quot;],
+243                      &quot;sql_text&quot;: case[&quot;sql_text&quot;],
+244                      &quot;notes&quot;: case[&quot;notes&quot;],
+245                      &quot;raw_response&quot;: &quot;&quot;,
+246                  }
+247              )
+248          print_kv(&quot;评测结果数&quot;, len(results))
+249          return results
+250  
+251      adapter = build_publish_agent_adapter(parser_backend)
+252      results: List[Dict[str, str]] = []
+253  
+254      for case in cases:
+255          summary = adapter.parse_summary(case)
+256          actual_score = score_label_pair(
+257              gt_status=case[&quot;gt_status&quot;],
+258              gt_error_type=case[&quot;gt_error_type&quot;],
+259              gt_error_subtype=case[&quot;gt_error_subtype&quot;],
+260              observed_status=summary.actual_status,
+261              observed_error_type=summary.actual_error_type,
+262              observed_error_subtype=getattr(summary, &quot;actual_error_subtype&quot;, &quot;&quot;),
+263          )
+264          baseline_score = score_label_pair(
+265              gt_status=case[&quot;gt_status&quot;],
+266              gt_error_type=case[&quot;gt_error_type&quot;],
+267              gt_error_subtype=case[&quot;gt_error_subtype&quot;],</pre></div>
+  </div>
+  <script>
+    document.querySelectorAll("a").forEach((link) => {
+      link.setAttribute("target", "_blank");
+      link.setAttribute("rel", "noreferrer");
+    });
+  </script>
+</body>
+</html>

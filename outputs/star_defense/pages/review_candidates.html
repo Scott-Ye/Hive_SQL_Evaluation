@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>待审池</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #0b1120;
+      color: #eef4ff;
+    }
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 28px 48px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+    }
+    .sub {
+      color: #b8c5e2;
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 22px;
+    }
+    .card {
+      background: #121a31;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 16px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+    h2 {
+      margin: 0 0 10px;
+      color: #78c6ff;
+      font-size: 20px;
+    }
+    p, li {
+      color: #b8c5e2;
+      line-height: 1.75;
+      font-size: 15px;
+    }
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .rich p {
+      margin: 0 0 12px;
+    }
+    .rich h2, .rich h3, .rich h4 {
+      margin: 18px 0 10px;
+      color: #78c6ff;
+    }
+    .rich strong {
+      color: #eef4ff;
+      font-weight: 800;
+    }
+    .rich em {
+      color: #d7e5ff;
+      font-style: italic;
+    }
+    .rich code {
+      background: rgba(255,255,255,0.07);
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-family: "Cascadia Code", "Consolas", monospace;
+      color: #eef4ff;
+      font-size: 13px;
+    }
+    .rich img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 10px 0;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      table-layout: fixed;
+    }
+    th, td {
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 8px 8px;
+      text-align: left;
+      vertical-align: top;
+      color: #b8c5e2;
+      line-height: 1.6;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+    th {
+      color: #eef4ff;
+    }
+    pre {
+      margin: 0;
+      padding: 16px;
+      background: #0d152b;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: auto;
+      line-height: 1.55;
+      font-size: 13px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      color: #d7e5ff;
+      font-family: "Cascadia Code", "Consolas", monospace;
+    }
+    a {
+      color: #78c6ff;
+      text-decoration: none;
+      border-bottom: 1px dashed rgba(120,198,255,0.45);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>待审池</h1>
+    <div class="sub">来源文件：C:\Users\INT\Desktop\工程训练营-构建大数据开发套件智能体评估体系\data\curated\hive_cases_real_review_candidates.csv</div>
+    <div class="card"><h2>摘要</h2><table><thead><tr><th>指标</th><th>说明</th></tr></thead><tbody><tr><td>待审池规模</td><td>455 条</td></tr><tr><td>主要作用</td><td>保留中低可信样本，作为后续人工审校与升标入口</td></tr><tr><td>样本强度</td><td>中等可信=260，低可信=195</td></tr></tbody></table></div><div class="card"><h2>前几行预览</h2><table><thead><tr><th>case_id</th><th>level1_category</th><th>level2_category</th><th>difficulty</th><th>gt_status</th><th>gt_error_type</th><th>gt_error_subtype</th><th>gt_label_source</th><th>gt_label_strength</th><th>baseline_status</th><th>baseline_error_type</th><th>baseline_error_subtype</th><th>baseline_error_type_raw</th><th>baseline_error_subtype_raw</th><th>baseline_error_position</th><th>baseline_label_source</th><th>sql_text</th><th>source_tier</th><th>source</th><th>source_ref</th><th>tags</th><th>notes</th><th>review_reason</th><th>review_priority</th></tr></thead><tbody><tr><td></td><td>DDL</td><td>ALTER_TABLE_SYNTAX</td><td>medium</td><td>fail</td><td>parse_error</td><td></td><td>open_benchmark_clientnegative_directory</td><td>weak</td><td>pass</td><td></td><td></td><td></td><td></td><td></td><td>local_hive_parse_sdk</td><td>alter table alter_rename_partition partition (pCol1=&#x27;old_part1:&#x27;, pcol2=&#x27;old_part2:&#x27;) rename to partition (pCol1=&#x27;old_part1:&#x27;, pcol2=&#x27;old_part2:&#x27;, pcol3=&#x27;old_part3:&#x27;)</td><td>real</td><td>apache_hive_clientnegative</td><td><a href="https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/alter_rename_partition_failure3.q">https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/alter_rename_partition_failure3.q</a></td><td>real;open_benchmark;ddl;fail;weak_gt</td><td>Auto-extracted from Apache Hive open-source query test suite | negative directory assertion | baseline=local_hive_parse_sdk</td><td>weak_gt_excluded_from_strict_gold</td><td>highest</td></tr><tr><td></td><td>DDL</td><td>ALTER_TABLE_SYNTAX</td><td>medium</td><td>fail</td><td>parse_error</td><td></td><td>open_benchmark_clientnegative_directory</td><td>weak</td><td>pass</td><td></td><td></td><td></td><td></td><td></td><td>local_hive_parse_sdk</td><td>alter table alter_rename_partition partition (pCol1=&#x27;nonexist_part1&#x27;, pcol2=&#x27;nonexist_part2&#x27;) rename to partition (pCol1=&#x27;new_part1&#x27;, pcol2=&#x27;new_part2&#x27;)</td><td>real</td><td>apache_hive_clientnegative</td><td><a href="https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/alter_rename_partition_failure.q">https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/alter_rename_partition_failure.q</a></td><td>real;open_benchmark;ddl;fail;weak_gt</td><td>Auto-extracted from Apache Hive open-source query test suite | negative directory assertion | baseline=local_hive_parse_sdk</td><td>weak_gt_excluded_from_strict_gold</td><td>highest</td></tr><tr><td></td><td>DDL</td><td>ALTER_TABLE_SYNTAX</td><td>medium</td><td>fail</td><td>parse_error</td><td></td><td>open_benchmark_clientnegative_directory</td><td>weak</td><td>pass</td><td></td><td></td><td></td><td></td><td></td><td>local_hive_parse_sdk</td><td>alter table alter_rename_partition partition (pCol1=&#x27;old_part1:&#x27;, pcol2=&#x27;old_part2:&#x27;) rename to partition (pCol1=&#x27;old_part1:&#x27;, pcol2=&#x27;old_part2:&#x27;)</td><td>real</td><td>apache_hive_clientnegative</td><td><a href="https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/alter_rename_partition_failure2.q">https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/alter_rename_partition_failure2.q</a></td><td>real;open_benchmark;ddl;fail;weak_gt</td><td>Auto-extracted from Apache Hive open-source query test suite | negative directory assertion | baseline=local_hive_parse_sdk</td><td>weak_gt_excluded_from_strict_gold</td><td>highest</td></tr><tr><td></td><td>DDL</td><td>ALTER_TABLE_SYNTAX</td><td>medium</td><td>fail</td><td>parse_error</td><td></td><td>open_benchmark_clientnegative_directory</td><td>weak</td><td>pass</td><td></td><td></td><td></td><td></td><td></td><td>local_hive_parse_sdk</td><td>alter table stat_test set TBLPROPERTIES(&#x27;numFiles&#x27;=&#x27;1&#x27;, &#x27;numRows&#x27;=&#x27;1&#x27;, &#x27;totalSize&#x27;=&#x27;1&#x27;, &#x27;rawDataSize&#x27;=&#x27;1&#x27;, &#x27;numFilesErasureCoded&#x27;=&#x27;NaN&#x27;)</td><td>real</td><td>apache_hive_clientnegative</td><td><a href="https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/alter_tableprops_non_numeric_11.q">https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/alter_tableprops_non_numeric_11.q</a></td><td>real;open_benchmark;ddl;fail;weak_gt</td><td>Auto-extracted from Apache Hive open-source query test suite | negative directory assertion | baseline=local_hive_parse_sdk</td><td>weak_gt_excluded_from_strict_gold</td><td>highest</td></tr><tr><td></td><td>DDL</td><td>ALTER_TABLE_SYNTAX</td><td>medium</td><td>fail</td><td>parse_error</td><td></td><td>open_benchmark_clientnegative_directory</td><td>weak</td><td>pass</td><td></td><td></td><td></td><td></td><td></td><td>local_hive_parse_sdk</td><td>ALTER TABLE srcpart ARCHIVE PARTITION (ds=&#x27;2008-04-08&#x27;, hr=&#x27;12&#x27;) PARTITION (ds=&#x27;2008-04-08&#x27;, hr=&#x27;11&#x27;)</td><td>real</td><td>apache_hive_clientnegative</td><td><a href="https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/archive4.q">https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/archive4.q</a></td><td>real;open_benchmark;ddl;fail;weak_gt</td><td>Auto-extracted from Apache Hive open-source query test suite | negative directory assertion | baseline=local_hive_parse_sdk</td><td>weak_gt_excluded_from_strict_gold</td><td>highest</td></tr><tr><td></td><td>DDL</td><td>ALTER_TABLE_SYNTAX</td><td>medium</td><td>fail</td><td>parse_error</td><td></td><td>open_benchmark_clientnegative_directory</td><td>weak</td><td>pass</td><td></td><td></td><td></td><td></td><td></td><td>local_hive_parse_sdk</td><td>alter table exchange_partition_test_2 exchange partition (b=1) with table exchange_partition_test_1</td><td>real</td><td>apache_hive_clientnegative</td><td><a href="https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/authorization_alter_table_exchange_partition_fail.q">https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/authorization_alter_table_exchange_partition_fail.q</a></td><td>real;open_benchmark;ddl;fail;weak_gt</td><td>Auto-extracted from Apache Hive open-source query test suite | negative directory assertion | baseline=local_hive_parse_sdk</td><td>weak_gt_excluded_from_strict_gold</td><td>highest</td></tr><tr><td></td><td>DDL</td><td>ALTER_TABLE_SYNTAX</td><td>medium</td><td>fail</td><td>parse_error</td><td></td><td>open_benchmark_clientnegative_directory</td><td>weak</td><td>pass</td><td></td><td></td><td></td><td></td><td></td><td>local_hive_parse_sdk</td><td>alter table exchange_partition_test_2 exchange partition (b=1) with table exchange_partition_test_1</td><td>real</td><td>apache_hive_clientnegative</td><td><a href="https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/authorization_alter_table_exchange_partition_fail2.q">https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/authorization_alter_table_exchange_partition_fail2.q</a></td><td>real;open_benchmark;ddl;fail;weak_gt</td><td>Auto-extracted from Apache Hive open-source query test suite | negative directory assertion | baseline=local_hive_parse_sdk</td><td>weak_gt_excluded_from_strict_gold</td><td>highest</td></tr><tr><td></td><td>DDL</td><td>ALTER_TABLE_SYNTAX</td><td>medium</td><td>fail</td><td>parse_error</td><td></td><td>open_benchmark_clientnegative_directory</td><td>weak</td><td>pass</td><td></td><td></td><td></td><td></td><td></td><td>local_hive_parse_sdk</td><td>alter table aa set serdeproperties (&quot;input.regex&quot; = &quot;[^\\](.*)&quot;, &quot;output.format.string&quot; = &quot;$1s&quot;)</td><td>real</td><td>apache_hive_clientnegative</td><td><a href="https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/alter_table_wrong_regex.q">https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/alter_table_wrong_regex.q</a></td><td>real;open_benchmark;ddl;fail;weak_gt</td><td>Auto-extracted from Apache Hive open-source query test suite | negative directory assertion | baseline=local_hive_parse_sdk</td><td>weak_gt_excluded_from_strict_gold</td><td>highest</td></tr><tr><td></td><td>DDL</td><td>ALTER_TABLE_SYNTAX</td><td>medium</td><td>fail</td><td>parse_error</td><td></td><td>open_benchmark_clientnegative_directory</td><td>weak</td><td>pass</td><td></td><td></td><td></td><td></td><td></td><td>local_hive_parse_sdk</td><td>alter table table2 add constraint fk1 foreign key (c) references table1(a) disable novalidate</td><td>real</td><td>apache_hive_clientnegative</td><td><a href="https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/alter_table_constraint_invalid_fk_col1.q">https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/alter_table_constraint_invalid_fk_col1.q</a></td><td>real;open_benchmark;ddl;fail;weak_gt</td><td>Auto-extracted from Apache Hive open-source query test suite | negative directory assertion | baseline=local_hive_parse_sdk</td><td>weak_gt_excluded_from_strict_gold</td><td>highest</td></tr><tr><td></td><td>DDL</td><td>ALTER_TABLE_SYNTAX</td><td>medium</td><td>fail</td><td>parse_error</td><td></td><td>open_benchmark_clientnegative_directory</td><td>weak</td><td>pass</td><td></td><td></td><td></td><td></td><td></td><td>local_hive_parse_sdk</td><td>alter table table2 add constraint fk1 foreign key (b) references table1(c) disable novalidate</td><td>real</td><td>apache_hive_clientnegative</td><td><a href="https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/alter_table_constraint_invalid_fk_col2.q">https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/alter_table_constraint_invalid_fk_col2.q</a></td><td>real;open_benchmark;ddl;fail;weak_gt</td><td>Auto-extracted from Apache Hive open-source query test suite | negative directory assertion | baseline=local_hive_parse_sdk</td><td>weak_gt_excluded_from_strict_gold</td><td>highest</td></tr><tr><td></td><td>DDL</td><td>ALTER_TABLE_SYNTAX</td><td>medium</td><td>fail</td><td>parse_error</td><td></td><td>open_benchmark_clientnegative_directory</td><td>weak</td><td>pass</td><td></td><td></td><td></td><td></td><td></td><td>local_hive_parse_sdk</td><td>alter table table3 add constraint fk1 foreign key (c) references table1(a) disable novalidate</td><td>real</td><td>apache_hive_clientnegative</td><td><a href="https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/alter_table_constraint_invalid_fk_tbl1.q">https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/alter_table_constraint_invalid_fk_tbl1.q</a></td><td>real;open_benchmark;ddl;fail;weak_gt</td><td>Auto-extracted from Apache Hive open-source query test suite | negative directory assertion | baseline=local_hive_parse_sdk</td><td>weak_gt_excluded_from_strict_gold</td><td>highest</td></tr><tr><td></td><td>DDL</td><td>ALTER_TABLE_SYNTAX</td><td>medium</td><td>fail</td><td>parse_error</td><td></td><td>open_benchmark_clientnegative_directory</td><td>weak</td><td>pass</td><td></td><td></td><td></td><td></td><td></td><td>local_hive_parse_sdk</td><td>alter table table2 add constraint fk1 foreign key (b) references table3(a) disable novalidate</td><td>real</td><td>apache_hive_clientnegative</td><td><a href="https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/alter_table_constraint_invalid_fk_tbl2.q">https://github.com/apache/hive/blob/master/ql/src/test/queries/clientnegative/alter_table_constraint_invalid_fk_tbl2.q</a></td><td>real;open_benchmark;ddl;fail;weak_gt</td><td>Auto-extracted from Apache Hive open-source query test suite | negative directory assertion | baseline=local_hive_parse_sdk</td><td>weak_gt_excluded_from_strict_gold</td><td>highest</td></tr></tbody></table><p>仅展示前 12 行；完整源文件位置：C:\Users\INT\Desktop\工程训练营-构建大数据开发套件智能体评估体系\data\curated\hive_cases_real_review_candidates.csv</p></div>
+  </div>
+  <script>
+    document.querySelectorAll("a").forEach((link) => {
+      link.setAttribute("target", "_blank");
+      link.setAttribute("rel", "noreferrer");
+    });
+  </script>
+</body>
+</html>
