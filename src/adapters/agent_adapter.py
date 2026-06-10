@@ -1,3 +1,5 @@
+"""Agent 后端适配与结果摘要转换。"""
+
 from __future__ import annotations
 
 import json
@@ -22,7 +24,7 @@ class AgentParseSummary:
 
 
 class BasePublishAgentAdapter:
-    """Preserves the agent-facing response contract for all parser backends."""
+    """统一维护面向 Agent 的返回契约，便于不同解析后端复用。"""
 
     def __init__(self, trace_prefix: str) -> None:
         self._counter = 0
@@ -47,6 +49,7 @@ class BasePublishAgentAdapter:
         actual_error_subtype_raw = ""
         actual_error_position = ""
         if actual_status == "fail":
+            # 失败时把 Agent 返回的 JSON 结果重新拆回评测需要的结构化字段。
             result_text = str(data["result"])
             parsed_result = json.loads(result_text)
             actual_error_type = str(parsed_result.get("normalizedErrorType", ""))
@@ -147,7 +150,7 @@ class BasePublishAgentAdapter:
 
 
 class HiveParseSdkAdapter(BasePublishAgentAdapter):
-    """Real adapter backed by Apache Hive ParseDriver."""
+    """基于 Apache Hive ParseDriver 的真实解析适配器。"""
 
     def __init__(self) -> None:
         super().__init__("SDKAGENT")
@@ -178,4 +181,7 @@ class HiveParseSdkAdapter(BasePublishAgentAdapter):
 
 
 def build_publish_agent_adapter(parser_backend: str | None = None) -> BasePublishAgentAdapter:
-    return HiveParseSdkAdapter()
+    backend = (parser_backend or "sdk").strip().lower()
+    if backend in {"sdk", "hive_parse_sdk", "hive-parse-sdk"}:
+        return HiveParseSdkAdapter()
+    raise ValueError(f"Unsupported parser backend: {parser_backend}")

@@ -1,3 +1,5 @@
+"""从 Apache Hive parser unit tests 中抽取 SQL 样本与 GT 线索。"""
+
 from __future__ import annotations
 
 import json
@@ -28,9 +30,11 @@ RESERVED_KEYWORDS_BLOCK_PATTERN = re.compile(r"Arrays\.asList\((?P<body>.*?)\);"
 STRING_LITERAL_PATTERN = re.compile(r'"((?:\\.|[^"])*)"')
 PARSE_FUNCTION_NAMES = ("parseDriver.parse", "parseDriver.parseSelect", "parse")
 NEGATIVE_FILE_HINTS = ("negative", "invalid", "error", "quote", "quoted", "reserved", "unsupported")
+# 以下启发式规则根据 parser unit 文件名推断 GT 标签。
 
 
 def infer_parser_unit_gt(file_name: str, sql_text: str) -> Dict[str, str]:
+    # 根据 parser unit 文件名推断 GT 状态与子类型线索。
     lower_name = file_name.lower()
     gt_status = "fail" if any(hint in lower_name for hint in NEGATIVE_FILE_HINTS) else "pass"
     gt_error_type = ""
@@ -82,6 +86,7 @@ def unescape_java_string(raw_text: str) -> str:
 
 
 def split_top_level(expression: str, separator: str) -> List[str]:
+    # 只在“最外层”按分隔符切开，避免把字符串字面量或括号里的内容误拆。
     parts: List[str] = []
     current: List[str] = []
     depth = 0
@@ -123,11 +128,13 @@ def split_first_argument(expression: str) -> str:
 
 
 def resolve_java_string_expression(expression: str, constants: Dict[str, str]) -> str | None:
+    # 解析 Java 字符串表达式，以便把 parse() 调用还原成 SQL 文本。
     expression = expression.strip()
     if not expression:
         return None
 
     if expression.startswith("String.format("):
+        # 先处理 String.format("...", variable) 这种模板拼接场景。
         match = re.match(
             r'String\.format\(\s*"(?P<template>(?:\\.|[^"])*)"\s*,\s*(?P<variable>[A-Za-z_][A-Za-z0-9_]*)\s*\)$',
             expression,
@@ -142,6 +149,7 @@ def resolve_java_string_expression(expression: str, constants: Dict[str, str]) -
             return None
         return template % variable_value
 
+    # 再处理 "a" + CONST + "b" 这类普通字符串拼接。
     parts = split_top_level(expression, "+")
     resolved: List[str] = []
     for part in parts:
@@ -161,6 +169,7 @@ def resolve_java_string_expression(expression: str, constants: Dict[str, str]) -
 def extract_string_constants(java_text: str) -> Dict[str, str]:
     constants: Dict[str, str] = {}
     for match in STRING_ASSIGN_PATTERN.finditer(java_text):
+        # 先收集 String 常量，后面解析 parse(...) 调用时可直接引用。
         value = resolve_java_string_expression(match.group("expr"), constants)
         if value is not None:
             constants[match.group("name")] = value
@@ -168,6 +177,7 @@ def extract_string_constants(java_text: str) -> Dict[str, str]:
 
 
 def _capture_parenthesized(java_text: str, open_index: int) -> str:
+    # 从给定左括号开始抓取完整 (...) 片段，兼容字符串和嵌套括号。
     depth = 0
     in_string = False
     escape = False
@@ -197,6 +207,7 @@ def _capture_parenthesized(java_text: str, open_index: int) -> str:
 
 
 def extract_parse_expressions(java_text: str) -> List[str]:
+    # 从 Java 测试中提取 parse(...) 这类调用的参数列表。
     expressions: List[str] = []
     for function_name in PARSE_FUNCTION_NAMES:
         search_from = 0
@@ -208,6 +219,7 @@ def extract_parse_expressions(java_text: str) -> List[str]:
             if open_paren_index >= len(java_text) or java_text[open_paren_index] != "(":
                 search_from = index + len(function_name)
                 continue
+            # 从函数名后面的第一个左括号开始，向后捕获完整参数片段。
             captured = _capture_parenthesized(java_text, open_paren_index)
             if captured:
                 expressions.append(captured[1:-1].strip())
@@ -216,6 +228,7 @@ def extract_parse_expressions(java_text: str) -> List[str]:
 
 
 def extract_sql11_negative_rows(java_text: str, source_ref: str) -> List[Dict[str, str]]:
+    # 这类测试会把保留字集合写在代码里，直接展开成一组强负样本。
     keywords = [match.group("keyword") for match in SQL11_KEYWORDS_PATTERN.finditer(java_text)]
     rows: List[Dict[str, str]] = []
     for keyword in keywords:
@@ -249,6 +262,7 @@ def extract_reserved_keyword_negative_rows(java_text: str, source_ref: str) -> L
     match = RESERVED_KEYWORDS_BLOCK_PATTERN.search(java_text)
     if not match:
         return []
+    # Arrays.asList(...) 中列出的保留字会被批量转成 CREATE TABLE 失败样本。
     keywords = [unescape_java_string(keyword) for keyword in STRING_LITERAL_PATTERN.findall(match.group("body"))]
     rows: List[Dict[str, str]] = []
     for keyword in keywords:
@@ -288,6 +302,7 @@ def extract_rows_from_java_test(file_name: str, download_url: str, html_url: str
     if file_name == "TestReservedWords.java":
         rows.extend(extract_reserved_keyword_negative_rows(java_text, html_url))
 
+    # 通用路径：找到 parse(...) 的入参，再尽量还原成真实 SQL。
     for expression in extract_parse_expressions(java_text):
         sql_text = resolve_java_string_expression(split_first_argument(expression), constants)
         if not sql_text or not is_sql_like(sql_text):
@@ -325,6 +340,7 @@ def list_parser_test_files() -> List[Dict[str, str]]:
                 "html_url": f"https://github.com/apache/hive/blob/master/{path}",
             }
         )
+    # 这里只保留 parser 单测目录下的 Java 文件，不把其他测试类型混进来。
     print_kv("parser unit 测试文件数", len(files))
     return files
 
@@ -360,6 +376,7 @@ def _baseline_key(row: Dict[str, str]) -> tuple[str, str, str]:
 
 
 def _merge_existing_baselines(new_rows: List[Dict[str, str]], cached_rows: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    # 刷新缓存样本时，保留已经冻结的 baseline 字段。
     baseline_by_key = {
         _baseline_key(row): row
         for row in cached_rows
@@ -403,6 +420,7 @@ def load_cached_parser_unit_rows() -> List[Dict[str, str]]:
                 needs_rewrite = True
             rows.append(payload)
     if any("gt_status" not in row for row in rows):
+        # 旧缓存缺少 GT 字段时，直接重建整份 parser unit 候选池。
         refreshed_rows = extract_parser_unit_rows()
         write_parser_unit_jsonl(refreshed_rows)
         return refreshed_rows
@@ -425,6 +443,7 @@ def refresh_parser_unit_sources(force_refresh: bool = False) -> Dict[str, object
                 "cache_hit": True,
             }
 
+    # 强制刷新时重新抽取源码样本，并把已冻结的 baseline 信息补回去。
     rows = extract_parser_unit_rows()
     rows = _merge_existing_baselines(rows, cached_rows)
     write_parser_unit_jsonl(rows)

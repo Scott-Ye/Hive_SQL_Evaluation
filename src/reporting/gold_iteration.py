@@ -1,3 +1,5 @@
+"""黄金集版本迭代分析报告生成逻辑。"""
+
 from __future__ import annotations
 
 import csv

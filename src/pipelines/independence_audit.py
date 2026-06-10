@@ -1,3 +1,5 @@
+"""黄金集与 baseline 独立性审计逻辑。"""
+
 from __future__ import annotations
 
 from collections import Counter
@@ -16,12 +18,15 @@ def assert_gt_baseline_independence(
 ) -> None:
     issues: List[str] = []
     for index, row in enumerate(rows, start=1):
+        # case_id 缺失时退化成阶段名 + 序号，保证报错信息仍然可定位。
         case_label = row.get("case_id", f"{stage}_{index}")
         gt_strength = (row.get("gt_label_strength", "") or "").lower()
         baseline_status = (row.get("baseline_status", "") or "").strip()
 
+        # 约束 1：某些阶段只允许 strong GT 进入，避免弱标签混入最终黄金集。
         if require_strong_only and gt_strength != "strong":
             issues.append(f"{case_label}: 当前阶段要求高可信真值，但实际为 {row.get('gt_label_strength', '')}")
+        # 约束 2：在 baseline 尚未冻结的阶段，所有 baseline 字段都必须保持为空。
         if require_empty_baseline and (
             baseline_status
             or row.get("baseline_error_type", "")
@@ -32,6 +37,7 @@ def assert_gt_baseline_independence(
             issues.append(f"{case_label}: 当前阶段 baseline 字段必须为空")
 
     if issues:
+        # 只截取前 50 条问题，避免一次性把终端刷满。
         raise ValueError("黄金集样本约束检查失败:\n" + "\n".join(issues[:50]))
 
 

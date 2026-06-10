@@ -1,8 +1,11 @@
+"""项目路径、输出位置与 CSV 字段配置。"""
+
 from __future__ import annotations
 
 from pathlib import Path
 
 
+# 数据、SDK 与报告链路共用的根目录配置。
 ROOT_DIR = Path(__file__).resolve().parents[2]
 DATA_DIR = ROOT_DIR / "data"
 SOURCE_MATERIAL_DIR = DATA_DIR / "source_materials"
@@ -47,6 +50,7 @@ INDEPENDENCE_AUDIT_MD = OUTPUT_DIR / "independence_audit.md"
 EVALUATION_STANDARD_MD = OUTPUT_DIR / "parse_evaluation_standard.md"
 TARGET_CASE_COUNT = 100
 
+# 最终黄金集 CSV 字段，包含 GT、baseline 及 baseline raw 字段。
 CASE_FIELDS = [
     "case_id",
     "level1_category",
@@ -72,26 +76,3 @@ CASE_FIELDS = [
     "notes",
 ]
 
-RAW_SOURCE_FIELDS = [
-    "level1_category",
-    "level2_category",
-    "difficulty",
-    "gt_status",
-    "gt_error_type",
-    "gt_error_subtype",
-    "gt_label_source",
-    "gt_label_strength",
-    "baseline_status",
-    "baseline_error_type",
-    "baseline_error_subtype",
-    "baseline_error_type_raw",
-    "baseline_error_subtype_raw",
-    "baseline_error_position",
-    "baseline_label_source",
-    "sql_text",
-    "source_tier",
-    "source",
-    "source_ref",
-    "tags",
-    "notes",
-]

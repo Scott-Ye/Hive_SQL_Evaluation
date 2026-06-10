@@ -1,3 +1,5 @@
+"""抓取、缓存并抽取 Hive 官方文档中的 SQL 示例。"""
+
 from __future__ import annotations
 
 import html
@@ -13,6 +15,7 @@ from src.core.progress import print_kv, print_progress, print_stage
 from src.core.project_config import REAL_EXTRACTED_JSONL, REAL_HTML_CACHE_DIR
 
 
+# 用于发现最新官方文档页面的种子 URL。
 SEED_OFFICIAL_DOC_URLS = [
     "https://hive.apache.org/docs/latest/language/languagemanual/",
     "https://hive.apache.org/docs/latest/language/languagemanual-ddl/",
@@ -99,6 +102,7 @@ def normalize_doc_url(base_url: str, href: str) -> str:
 
 
 def should_follow_url(url: str) -> bool:
+    # 只追踪 Hive docs 主站里的语言手册类页面，避免图片、压缩包等无关资源。
     if not url.startswith("https://hive.apache.org/docs/latest/"):
         return False
     lower_url = url.lower()
@@ -112,6 +116,7 @@ def should_follow_url(url: str) -> bool:
 
 
 def discover_official_doc_urls(seed_urls: List[str] | None = None) -> List[str]:
+    # 按广度优先方式抓取 Hive 文档，直到达到页面数量上限。
     seed_urls = seed_urls or SEED_OFFICIAL_DOC_URLS
     queue = list(dict.fromkeys(seed_urls))
     discovered: List[str] = []
@@ -150,6 +155,7 @@ def cache_official_pages(urls: List[str] | None = None) -> List[Path]:
         slug = slugify_url(url)
         html_path = REAL_HTML_CACHE_DIR / f"{slug}.html"
         meta_path = REAL_HTML_CACHE_DIR / f"{slug}.json"
+        # html 与 source_ref 分开落盘，后续抽取时就不需要再次请求网络。
         html_path.write_text(html_text, encoding="utf-8")
         meta_path.write_text(
             json.dumps({"source_ref": url}, ensure_ascii=False, indent=2),
@@ -175,6 +181,7 @@ def is_sql_like(code_text: str) -> bool:
 
 
 def infer_real_meta(sql_text: str, source_ref: str) -> Dict[str, str]:
+    # 只保留看起来可以直接执行的 SQL 代码块。
     upper_sql = sql_text.upper()
     level1 = "UTILITY"
     level2 = "OTHER"
@@ -270,6 +277,7 @@ def infer_real_meta(sql_text: str, source_ref: str) -> Dict[str, str]:
 
 
 def is_real_example_case(sql_text: str) -> bool:
+    # 过滤文档里的占位写法、命令行示例和过长片段，尽量留下可直接评测的真实 SQL。
     upper_sql = sql_text.upper()
 
     if "[" in sql_text or "]" in sql_text:
@@ -308,6 +316,7 @@ def extract_cases_from_cached_html() -> List[Dict[str, str]]:
             code_text = html_code_to_text(match.group("code"))
             if not code_text or not is_sql_like(code_text):
                 continue
+            # 文档页里的代码块很多，这里只把识别出的 SQL 代码块转换成候选样本。
             rows.append(infer_real_meta(code_text, source_ref))
         print_progress("官方 SQL 抽取", index, len(html_paths), item=html_path.stem)
     return rows
@@ -325,6 +334,7 @@ def _baseline_key(row: Dict[str, str]) -> tuple[str, str, str]:
 
 
 def _merge_existing_baselines(new_rows: List[Dict[str, str]], cached_rows: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    # 刷新缓存样本时，保留已经冻结的 baseline 字段。
     baseline_by_key = {
         _baseline_key(row): row
         for row in cached_rows
@@ -364,6 +374,7 @@ def load_cached_real_rows() -> List[Dict[str, str]]:
                 continue
             payload = json.loads(line)
             if "gt_status" not in payload:
+                # 兼容旧版缓存字段名，读到后顺手升级并回写。
                 payload["gt_status"] = payload.get("expected_status", "")
                 payload["gt_error_type"] = payload.get("expected_error_type", "")
                 payload["gt_error_subtype"] = payload.get("expected_error_subtype", "")
@@ -399,6 +410,7 @@ def refresh_real_official_sources(force_refresh: bool = False) -> Dict[str, obje
                 "cache_hit": True,
             }
 
+    # 强制刷新时重新发现页面、重建缓存，再把旧 baseline 合并回新样本。
     official_urls = discover_official_doc_urls()
     cache_official_pages(official_urls)
     rows = extract_cases_from_cached_html()

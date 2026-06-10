@@ -1,3 +1,5 @@
+"""执行完整数据集构建与评测流程的命令行入口。"""
+
 from __future__ import annotations
 
 from src.core.progress import print_stage
@@ -27,6 +29,7 @@ from src.reporting.gold_stability import build_gold_stability_report
 
 
 def main() -> None:
+    # 默认使用本地 Java SDK 作为端到端评测后端。
     parser_backend = "sdk"
     real_dataset_note = (
         "评测 real-source 多源黄金集，来源于 Hive 官方文档、Apache Hive 开源 benchmark、"

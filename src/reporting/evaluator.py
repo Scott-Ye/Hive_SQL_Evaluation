@@ -1,3 +1,5 @@
+"""评测执行、打分与报告生成逻辑。"""
+
 from __future__ import annotations
 
 import csv
@@ -66,6 +68,7 @@ def _safe_rate(numerator: int, denominator: int) -> str:
 
 
 def _error_type_matches(gt_error_type: str, actual_error_type: str) -> bool:
+    # 允许同一语法错误家族之间记为“部分命中”，避免 taxonomy 微差直接判 0 分。
     if not gt_error_type or not actual_error_type:
         return False
     if gt_error_type == actual_error_type:
@@ -90,11 +93,13 @@ def score_label_pair(
     observed_error_type: str,
     observed_error_subtype: str,
 ) -> int:
+    # 第一步先看 pass/fail 状态；状态错了直接判 0 分。
     if gt_status != observed_status:
         return 0
     if gt_status == "pass":
         return 2
 
+    # 对负样本再细看 error_type / error_subtype 两层细节命中情况。
     detail_total = 0
     exact_hits = 0
     partial_hits = 0
@@ -173,6 +178,7 @@ def evaluate_cases(cases: List[Dict[str, str]], *, parser_backend: str | None = 
     print_kv("评测后端", backend)
     print_kv("评测样本数", len(cases))
     if backend == "sdk":
+        # SDK 模式走本地批量解析，先把 SQL 列表一次性交给 Java 侧处理。
         payload = [{"case_id": case["case_id"], "sql_text": case["sql_text"]} for case in cases]
         parsed_rows = parse_sql_rows(payload)
         parsed_by_case_id = {row["case_id"]: row for row in parsed_rows}
@@ -202,6 +208,7 @@ def evaluate_cases(cases: List[Dict[str, str]], *, parser_backend: str | None = 
                 observed_error_type=case["baseline_error_type"],
                 observed_error_subtype=case["baseline_error_subtype"],
             )
+            # match_result 只表示“是否拿到 2 分”，便于后续报告直接统计 strict match。
             match_result = "pass" if actual_score == 2 else "fail"
 
             results.append(
@@ -252,6 +259,7 @@ def evaluate_cases(cases: List[Dict[str, str]], *, parser_backend: str | None = 
     results: List[Dict[str, str]] = []
 
     for case in cases:
+        # Agent 模式逐条调用适配器，保留 trace_id、原始响应等排障信息。
         summary = adapter.parse_summary(case)
         actual_score = score_label_pair(
             gt_status=case["gt_status"],
@@ -325,6 +333,7 @@ def write_results(rows: List[Dict[str, str]], output_path: Path = EVAL_RESULT_CS
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(rows)
+
 def build_report(
     rows: List[Dict[str, str]],
     *,
@@ -332,6 +341,7 @@ def build_report(
     dataset_note: str = "默认评测 real-source 多源黄金集，来源于 Hive 官方文档与 Apache Hive 开源 benchmark。",
     parser_backend: str = "sdk",
 ) -> str:
+    # 先把总体指标、分层统计和典型样例一次性聚合出来，后面只负责拼 Markdown 文本。
     total = len(rows)
     actual_exact = sum(1 for row in rows if int(row["actual_score"]) == 2)
     actual_partial = sum(1 for row in rows if int(row["actual_score"]) == 1)
@@ -364,6 +374,7 @@ def build_report(
     delta_examples: List[Tuple[int, Dict[str, str]]] = []
 
     for row in rows:
+        # exact / partial / miss 会分别喂给不同维度统计，便于同一轮循环复用。
         actual_score = int(row["actual_score"])
         baseline_score = int(row["baseline_score"])
         exact_key = "exact" if actual_score == 2 else "not_exact"
@@ -393,6 +404,7 @@ def build_report(
         if actual_score != baseline_score:
             delta_examples.append((actual_score - baseline_score, row))
 
+    # 报告正文按“总体表现 -> 分布 -> 例子”展开，方便老师按层阅读。
     lines = [
         f"# {report_title}",
         "",

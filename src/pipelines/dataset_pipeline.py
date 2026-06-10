@@ -1,3 +1,5 @@
+"""构建最终黄金集，并冻结 baseline 标签。"""
+
 from __future__ import annotations
 
 import csv
@@ -17,7 +19,6 @@ from src.core.project_config import (
     CURATED_REAL_DATASET,
     REAL_REVIEW_QUEUE_DATASET,
     MAINTENANCE_REPORT,
-    RAW_SOURCE_FIELDS,
     REAL_SOURCE_DIR,
     TARGET_CASE_COUNT,
     VERSION_MANIFEST,
@@ -54,6 +55,7 @@ def _split_tags(raw_tags: str) -> List[str]:
 
 
 def _legacy_value(row: Dict[str, str], new_key: str, legacy_key: str) -> str:
+    # 优先读取新字段名；缺失时回退到旧字段名。
     value = (row.get(new_key, "") or "").strip()
     if value:
         return value
@@ -61,6 +63,7 @@ def _legacy_value(row: Dict[str, str], new_key: str, legacy_key: str) -> str:
 
 
 def normalize_case_row(row: Dict[str, str]) -> Dict[str, str]:
+    # 将单条样本规范化到当前 CASE_FIELDS 结构。
     normalized = {field: "" for field in CASE_FIELDS}
     for field in ("case_id", "level1_category", "level2_category", "difficulty", "sql_text", "source_tier", "source", "source_ref", "tags", "notes"):
         normalized[field] = (row.get(field, "") or "").strip()
@@ -84,6 +87,7 @@ def normalize_case_row(row: Dict[str, str]) -> Dict[str, str]:
 
 
 def infer_feature_labels(row: Dict[str, str]) -> List[str]:
+    # 从标签与 SQL 结构中提取特征标签，用于覆盖度分析。
     sql_text = row.get("sql_text", "")
     upper_sql = f" {sql_text.upper()} "
     features = set()
@@ -218,6 +222,7 @@ def _has_frozen_baseline(row: Dict[str, str]) -> bool:
 
 
 def annotate_baseline_labels(
+    # 冻结缺失的 baseline，并按需刷新已缓存的失败样本。
     rows: List[Dict[str, str]],
     *,
     only_missing: bool = False,
@@ -230,6 +235,7 @@ def annotate_baseline_labels(
         should_refresh_failure = refresh_existing_failures and row.get("baseline_status") == "fail"
         if only_missing and has_frozen_baseline and not should_refresh_failure:
             continue
+        # 这里用列表索引做临时 case_id，便于把批量解析结果再映射回原行。
         pending_indices.append(index)
         payload.append({"case_id": str(index), "sql_text": row["sql_text"]})
 
@@ -260,6 +266,7 @@ def annotate_baseline_labels(
 
 
 def freeze_real_source_baselines() -> Dict[str, int]:
+    # 刷新已缓存的 fail baseline，让 taxonomy 修正能同步落到来源缓存。
     source_specs = [
         ("official_docs", load_cached_real_rows, write_real_cases_jsonl),
         ("open_benchmark", load_cached_open_benchmark_rows, write_open_benchmark_jsonl),
@@ -336,6 +343,7 @@ def _read_version_case_rows(file_path: Path) -> List[Dict[str, str]]:
 
 
 def build_iteration_preference_sets(snapshot_limit: int = 3) -> Tuple[set[str], set[str]]:
+    # 优先保留最近几个快照里出现过的样本，提升版本迭代稳定性。
     snapshots = sorted(VERSION_DIR.glob("hive_cases_real_multisource_gold_*.csv"))
     if not snapshots:
         return set(), set()
@@ -364,6 +372,7 @@ def build_iteration_preference_sets(snapshot_limit: int = 3) -> Tuple[set[str], 
                 )
             )
 
+    # stable_core_sql 表示：最近几个版本里持续存在，且 GT 口径没有漂移的稳定样本。
     stable_core_sql = {
         sql_key
         for sql_key, count in occurrence_counter.items()
@@ -401,6 +410,7 @@ def _history_priority_key(
 
 
 def _pick_diverse_rows(
+    # 按 level2 轮转取样，尽量提升样本多样性。
     rows: List[Dict[str, str]],
     target_count: int,
     *,
@@ -423,6 +433,7 @@ def _pick_diverse_rows(
 
     while len(picked) < target_count:
         progressed = False
+        # 每轮从不同 level2 各拿一条，避免大量样本被同一种二级类型挤占。
         for level2 in ordered_level2:
             candidates = by_level2[level2]
             if not candidates:
@@ -437,6 +448,7 @@ def _pick_diverse_rows(
 
 
 def _balanced_bucket_pick(
+    # 在分桶内先交替混排 pass/fail 候选，再做后续比例再平衡。
     rows: List[Dict[str, str]],
     target_count: int,
     *,
@@ -554,6 +566,7 @@ def _replace_row_for_feature_coverage(
 
 
 def ensure_feature_coverage(
+    # 确保最终入选结果仍覆盖稀缺语法特征。
     selected_rows: List[Dict[str, str]],
     candidate_rows: List[Dict[str, str]],
     *,
@@ -577,6 +590,7 @@ def ensure_feature_coverage(
 
 
 def ensure_negative_error_coverage(
+    # 在可行范围内保证负样本覆盖重点错误类型。
     selected_rows: List[Dict[str, str]],
     candidate_rows: List[Dict[str, str]],
     *,
@@ -636,6 +650,7 @@ def ensure_negative_error_coverage(
 
 
 def rebalance_status_ratio(
+    # 将最终 100 条样本重新平衡到目标 pass/fail 比例附近。
     selected_rows: List[Dict[str, str]],
     candidate_rows: List[Dict[str, str]],
     *,
@@ -736,6 +751,7 @@ def quality_check_rows(rows: List[Dict[str, str]]) -> List[str]:
 
 
 def select_target_rows(
+    # 先按目标分桶选样，再统一调整状态比例、错误覆盖和特征覆盖。
     rows: List[Dict[str, str]],
     target_total: int = TARGET_CASE_COUNT,
     *,
@@ -748,6 +764,7 @@ def select_target_rows(
 
     selected_rows: List[Dict[str, str]] = []
     selected_ids = set()
+    # 先保证每个目标桶都有基础配额，再在后面补足总量与覆盖度。
     for bucket, target_count in TARGET_BUCKETS.items():
         bucket_rows = _balanced_bucket_pick(
             bucketed_rows.get(bucket, []),
@@ -809,6 +826,7 @@ def build_dataset(rows: List[Dict[str, str]], output_path: Path, case_prefix: st
 
 
 def build_curated_datasets() -> Dict[str, object]:
+    # 刷新各来源、冻结 baseline，并重新生成评测集。
     print_stage("刷新真实来源候选池")
     real_refresh_summary = refresh_real_official_sources()
     benchmark_refresh_summary = refresh_open_benchmark_sources()
@@ -893,6 +911,7 @@ def build_curated_dataset() -> Dict[str, object]:
 
 
 def write_version_manifest(
+    # 写出带时间戳的版本快照，用于历史对比与 stable core 分析。
     *,
     real_curated: List[Dict[str, str]],
     real_duplicate_count: int,
@@ -915,6 +934,7 @@ def write_version_manifest(
 
 
 def write_maintenance_report(
+    # 生成维护报告，汇总来源情况、过滤结果与 baseline 状态。
     *,
     real_curated: List[Dict[str, str]],
     real_duplicate_count: int,

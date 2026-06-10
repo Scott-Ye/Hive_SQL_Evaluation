@@ -1,3 +1,5 @@
+"""抓取并规范化 Apache Hive 开源 benchmark 查询文件。"""
+
 from __future__ import annotations
 
 import json
@@ -17,6 +19,7 @@ GITHUB_API_HEADERS = {
     "Accept": "application/vnd.github+json",
 }
 
+# 各目录 API 与预期 GT pass/fail 状态的映射关系。
 GITHUB_DIR_APIS = [
     (
         "clientpositive",
@@ -69,6 +72,7 @@ def http_get_text(url: str) -> str:
             with urlopen(request, timeout=30) as response:
                 return response.read().decode("utf-8", errors="ignore")
         except (IncompleteRead, TimeoutError, URLError, RemoteDisconnected) as exc:
+            # benchmark 来源依赖 GitHub 网络，请求失败时做有限次重试。
             last_error = exc
             continue
     raise RuntimeError(f"Failed to fetch benchmark source: {url}") from last_error
@@ -100,17 +104,20 @@ def list_query_files() -> List[Dict[str, str]]:
                 }
             )
             kept += 1
+        # 每个目录做上限控制，避免单一来源过大挤占总样本配额。
         print_kv(f"{source_name} 文件数", kept)
     return files
 
 
 def clean_query_file(text: str) -> str:
+    # 先移除块注释和行注释，降低后续按分号切分时的噪声。
     text = BLOCK_COMMENT_PATTERN.sub(" ", text)
     text = LINE_COMMENT_PATTERN.sub(" ", text)
     return text
 
 
 def split_sql_statements(text: str) -> List[str]:
+    # 基准测试文件中可能混有环境准备命令与 SQL 语句。
     statements: List[str] = []
     for chunk in text.split(";"):
         sql = " ".join(chunk.strip().split())
@@ -129,6 +136,7 @@ def split_sql_statements(text: str) -> List[str]:
 
 
 def apply_benchmark_gt(row: Dict[str, str], *, source_name: str, declared_status: str) -> Dict[str, str]:
+    # benchmark 的 GT 主要来自目录语义：positive 视为 pass，negative 视为 fail。
     gt_strength = "strong" if declared_status == "pass" else "weak"
     gt_error_type = "" if declared_status == "pass" else "parse_error"
     note_suffix = "positive directory assertion" if declared_status == "pass" else "negative directory assertion"
@@ -166,7 +174,7 @@ def extract_open_benchmark_rows() -> List[Dict[str, str]]:
         if not statements:
             continue
 
-        # Negative files often contain setup + one failing statement; keep the last SQL statement.
+        # 对负样本文件，仅保留最后一条语句作为代表性失败样本。
         selected_statements = statements if file_meta["expected_status"] == "pass" else [statements[-1]]
         for sql_text in selected_statements:
             row = infer_real_meta(sql_text, file_meta["source_ref"])
@@ -195,6 +203,7 @@ def _baseline_key(row: Dict[str, str]) -> tuple[str, str, str]:
 
 
 def _merge_existing_baselines(new_rows: List[Dict[str, str]], cached_rows: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    # 刷新缓存样本时，保留已经冻结的 baseline 字段。
     baseline_by_key = {
         _baseline_key(row): row
         for row in cached_rows
@@ -238,6 +247,7 @@ def load_cached_open_benchmark_rows() -> List[Dict[str, str]]:
                 needs_rewrite = True
             rows.append(payload)
     if any("gt_status" not in row for row in rows):
+        # 旧缓存缺少 GT 字段时，直接整批重抽一次，避免混合新旧 schema。
         refreshed_rows = extract_open_benchmark_rows()
         write_open_benchmark_jsonl(refreshed_rows)
         return refreshed_rows
@@ -260,6 +270,7 @@ def refresh_open_benchmark_sources(force_refresh: bool = False) -> Dict[str, obj
                 "cache_hit": True,
             }
 
+    # 强制刷新时重新联网抓取，再把旧 baseline 合并回新样本。
     rows = extract_open_benchmark_rows()
     rows = _merge_existing_baselines(rows, cached_rows)
     write_open_benchmark_jsonl(rows)

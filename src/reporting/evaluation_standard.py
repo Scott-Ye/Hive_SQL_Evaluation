@@ -1,3 +1,5 @@
+"""评测标准说明文档生成逻辑。"""
+
 from __future__ import annotations
 
 from collections import Counter
